@@ -86,6 +86,109 @@ function StaticCard({ title, emoji, bg, textColor = '#FFF' }: { title: string; e
 
 // ── Main screen ───────────────────────────────────────────────────────────────
 
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
+const Tab = createMaterialTopTabNavigator();
+
+function TabContent({ tabId }: { tabId: string }) {
+  // Determine visibility logic exactly as SDUI does
+  const showBuy = tabId === 'all' || tabId === 'buy';
+  const showSell = tabId === 'all' || tabId === 'sell';
+  const showLoans = tabId === 'all' || tabId === 'loans';
+  const showCarCheck = tabId === 'all' || tabId === 'car_check';
+  const showSmartChecks = tabId === 'all' || tabId === 'buy' || tabId === 'car_check';
+
+  return (
+    <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      {/* Buy car rail */}
+      {showBuy && (
+        <>
+          <StaticSectionHeader title="Buy car" badge="Up to ₹80,000 off" />
+          <FlatList data={BUY_CARDS} horizontal showsHorizontalScrollIndicator={false}
+            keyExtractor={i => i.id} contentContainerStyle={styles.railList}
+            renderItem={({ item }) => <StaticCard title={item.title} emoji={item.emoji} bg="#0F1F33" />} />
+        </>
+      )}
+
+      {/* Sell car rail */}
+      {showSell && (
+        <>
+          <StaticSectionHeader title="Sell your car" />
+          <FlatList data={SELL_CARDS} horizontal showsHorizontalScrollIndicator={false}
+            keyExtractor={i => i.id} contentContainerStyle={styles.railList}
+            renderItem={({ item }) => <StaticCard title={item.title} emoji={item.emoji} bg="#1B4332" />} />
+        </>
+      )}
+
+      {/* Loans icon rail */}
+      {showLoans && (
+        <View style={styles.iconSection}>
+          <StaticSectionHeader title="Get loans" />
+          <FlatList data={LOAN_ITEMS} horizontal showsHorizontalScrollIndicator={false}
+            keyExtractor={i => i.id} contentContainerStyle={styles.iconList}
+            renderItem={({ item }) => (
+              <TouchableOpacity style={styles.iconItem} onPress={() => onPress(item.label)} activeOpacity={0.7}>
+                <View style={[styles.iconCircle, { backgroundColor: item.bg }]}>
+                  <MaterialIcons name={item.icon} size={28} color="#555" />
+                </View>
+                <Text style={styles.iconLabel}>{item.label}</Text>
+              </TouchableOpacity>
+            )} />
+        </View>
+      )}
+
+      {/* Car check rail */}
+      {showCarCheck && (
+        <>
+          <StaticSectionHeader title="Car check services" />
+          <FlatList data={CHECK_CARDS} horizontal showsHorizontalScrollIndicator={false}
+            keyExtractor={i => i.id} contentContainerStyle={styles.railList}
+            renderItem={({ item }) => <StaticCard title={item.title} emoji={item.emoji} bg="#FFF8F0" textColor="#2C2C2C" />} />
+        </>
+      )}
+
+      {/* Grid */}
+      {showSmartChecks && (
+        <View style={styles.gridSection}>
+          <StaticSectionHeader title="Buy smarter with our checks" />
+          <View style={styles.gridRow}>
+            {GRID_CARDS.map(card => (
+              <TouchableOpacity key={card.id} style={[styles.gridCard, { backgroundColor: card.bg }]}
+                onPress={() => onPress(card.title)} activeOpacity={0.8}>
+                <View style={styles.gridImageBox}>
+                  <MaterialIcons name={card.emoji} size={28} color={card.accent} />
+                </View>
+                <Text style={[styles.gridTitle, { color: card.accent }]}>{card.title}</Text>
+                <Text style={styles.gridSubtitle}>{card.subtitle}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* Fraud list */}
+      {showSmartChecks && (
+        <View style={styles.listSection}>
+          <StaticSectionHeader title="Uncover frauds before you buy" />
+          {FRAUD_ROWS.map((row, index) => (
+            <TouchableOpacity key={row.id} style={[styles.listRow, index < FRAUD_ROWS.length - 1 && styles.listRowBorder]}
+              onPress={() => onPress(row.title)} activeOpacity={0.7}>
+              <View style={[styles.listIcon, { backgroundColor: row.bg }]}>
+                <MaterialIcons name={row.icon} size={22} color={row.iconColor} />
+              </View>
+              <View style={styles.listText}>
+                <Text style={styles.listTitle}>{row.title}</Text>
+                <Text style={styles.listSubtitle}>{row.subtitle}</Text>
+              </View>
+              <MaterialIcons name="chevron-right" size={24} color="#BDBDBD" />
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+    </ScrollView>
+  );
+}
+
 export function StaticHomeScreen() {
   const hasReported = useRef(false);
 
@@ -104,7 +207,7 @@ export function StaticHomeScreen() {
   });
 
   return (
-    <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+    <View style={{ flex: 1, backgroundColor: '#F7F7F7' }}>
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.locationRow}>
@@ -121,95 +224,41 @@ export function StaticHomeScreen() {
         </View>
       </View>
 
-      {/* Quicklinks */}
-      <View style={styles.quicklinksWrap}>
-        <FlatList data={QUICKLINKS} horizontal showsHorizontalScrollIndicator={false}
-          keyExtractor={i => i.id} contentContainerStyle={styles.quicklinksList}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity style={styles.qlItem} onPress={() => onPress(item.label)} activeOpacity={0.7}>
-              <View style={[styles.qlCircle, index === 0 && styles.qlCircleActive]}>
-                <MaterialIcons
-                  name={item.icon}
-                  size={24}
-                  color={index === 0 ? '#282CBA' : '#FFFFFF'}
-                />
-              </View>
-              <Text style={[styles.qlLabel, index === 0 && styles.qlLabelActive]}>{item.label}</Text>
-              {index === 0 && <View style={styles.qlActiveLine} />}
-            </TouchableOpacity>
-          )} />
-      </View>
-
-      {/* Buy car rail */}
-      <StaticSectionHeader title="Buy car" badge="Up to ₹80,000 off" />
-      <FlatList data={BUY_CARDS} horizontal showsHorizontalScrollIndicator={false}
-        keyExtractor={i => i.id} contentContainerStyle={styles.railList}
-        renderItem={({ item }) => <StaticCard title={item.title} emoji={item.emoji} bg="#0F1F33" />} />
-
-      {/* Sell car rail */}
-      <StaticSectionHeader title="Sell your car" />
-      <FlatList data={SELL_CARDS} horizontal showsHorizontalScrollIndicator={false}
-        keyExtractor={i => i.id} contentContainerStyle={styles.railList}
-        renderItem={({ item }) => <StaticCard title={item.title} emoji={item.emoji} bg="#1B4332" />} />
-
-      {/* Loans icon rail */}
-      <View style={styles.iconSection}>
-        <StaticSectionHeader title="Get loans" />
-        <FlatList data={LOAN_ITEMS} horizontal showsHorizontalScrollIndicator={false}
-          keyExtractor={i => i.id} contentContainerStyle={styles.iconList}
-          renderItem={({ item }) => (
-            <TouchableOpacity style={styles.iconItem} onPress={() => onPress(item.label)} activeOpacity={0.7}>
-              <View style={[styles.iconCircle, { backgroundColor: item.bg }]}>
-                <MaterialIcons name={item.icon} size={28} color="#555" />
-              </View>
-              <Text style={styles.iconLabel}>{item.label}</Text>
-            </TouchableOpacity>
-          )} />
-      </View>
-
-      {/* Car check rail */}
-      <StaticSectionHeader title="Car check services" />
-      <FlatList data={CHECK_CARDS} horizontal showsHorizontalScrollIndicator={false}
-        keyExtractor={i => i.id} contentContainerStyle={styles.railList}
-        renderItem={({ item }) => <StaticCard title={item.title} emoji={item.emoji} bg="#FFF8F0" textColor="#2C2C2C" />} />
-
-      {/* Grid */}
-      <View style={styles.gridSection}>
-        <StaticSectionHeader title="Buy smarter with our checks" />
-        <View style={styles.gridRow}>
-          {GRID_CARDS.map(card => (
-            <TouchableOpacity key={card.id} style={[styles.gridCard, { backgroundColor: card.bg }]}
-              onPress={() => onPress(card.title)} activeOpacity={0.8}>
-              <View style={styles.gridImageBox}>
-                <MaterialIcons name={card.emoji} size={28} color={card.accent} />
-              </View>
-              <Text style={[styles.gridTitle, { color: card.accent }]}>{card.title}</Text>
-              <Text style={styles.gridSubtitle}>{card.subtitle}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-
-      {/* Fraud list */}
-      <View style={styles.listSection}>
-        <StaticSectionHeader title="Uncover frauds before you buy" />
-        {FRAUD_ROWS.map((row, index) => (
-          <TouchableOpacity key={row.id} style={[styles.listRow, index < FRAUD_ROWS.length - 1 && styles.listRowBorder]}
-            onPress={() => onPress(row.title)} activeOpacity={0.7}>
-            <View style={[styles.listIcon, { backgroundColor: row.bg }]}>
-              <MaterialIcons name={row.icon} size={22} color={row.iconColor} />
-            </View>
-            <View style={styles.listText}>
-              <Text style={styles.listTitle}>{row.title}</Text>
-              <Text style={styles.listSubtitle}>{row.subtitle}</Text>
-            </View>
-            <MaterialIcons name="chevron-right" size={24} color="#BDBDBD" />
-          </TouchableOpacity>
+      <Tab.Navigator
+        screenOptions={{
+          tabBarScrollEnabled: true,
+          tabBarStyle: { backgroundColor: '#282CBA', elevation: 0, shadowOpacity: 0 },
+          tabBarItemStyle: { width: 'auto', paddingHorizontal: 12, paddingBottom: 4 },
+          tabBarLabelStyle: { color: '#FFFFFF', fontSize: 12, fontWeight: '700', textTransform: 'none' },
+          tabBarIndicatorStyle: { backgroundColor: '#FFFFFF', height: 3, borderTopLeftRadius: 3, borderTopRightRadius: 3 },
+        }}
+      >
+        {QUICKLINKS.map(link => (
+          <Tab.Screen 
+            key={link.id} 
+            name={link.id}
+            options={{
+              tabBarLabel: link.label,
+              tabBarIcon: ({ focused }) => (
+                <View style={[styles.qlCircle, focused && styles.qlCircleActive]}>
+                  <MaterialIcons
+                    name={link.icon}
+                    size={22}
+                    color={focused ? '#282CBA' : '#FFFFFF'}
+                  />
+                </View>
+              )
+            }}
+          >
+            {() => <TabContent tabId={link.id} />}
+          </Tab.Screen>
         ))}
-      </View>
-    </ScrollView>
+      </Tab.Navigator>
+    </View>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   scroll: { flex: 1, backgroundColor: '#F7F7F7' },
