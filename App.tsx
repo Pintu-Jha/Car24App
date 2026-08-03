@@ -70,8 +70,11 @@ function AppContent() {
   }
 
   return (
-    <View style={[styles.root, { paddingTop: insets.top }]}>
-      <StatusBar barStyle="light-content" backgroundColor="#282CBA" />
+    <View style={styles.root}>
+      <StatusBar barStyle="light-content" backgroundColor="#282CBA" translucent />
+
+      {/* Top Safe Area - Status Bar Background */}
+      <View style={{ height: insets.top, backgroundColor: '#282CBA' }} />
 
       <View style={styles.screenContainer}>
         {screen === 'sdui' && <SDUIHomeScreen useUnknownPayload={false} />}
@@ -79,7 +82,7 @@ function AppContent() {
         {screen === 'sdui_unknown' && <SDUIHomeScreen useUnknownPayload={true} />}
       </View>
 
-      <View style={{ paddingBottom: insets.bottom }}>
+      <View style={{ paddingBottom: insets.bottom, backgroundColor: '#FFFFFF' }}>
         <BottomTabBar
           activeTab="home"
           onToggleScreen={cycleScreen}
