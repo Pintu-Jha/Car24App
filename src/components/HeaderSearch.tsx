@@ -24,6 +24,7 @@ interface Props {
 
 export function HeaderSearch({ city, avatarInitials, searchPlaceholders }: Props) {
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [searchValue, setSearchValue] = useState('');
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -63,10 +64,16 @@ export function HeaderSearch({ city, avatarInitials, searchPlaceholders }: Props
       {/* Search bar */}
       <View style={styles.searchBar}>
         <MaterialIcons name="search" size={20} color="#9E9E9E" style={styles.searchIconStyle} />
-        <Animated.Text style={[styles.searchPlaceholder, { opacity: fadeAnim }]}>
-          {placeholder}
-        </Animated.Text>
-        <TextInput style={styles.searchInput} />
+        {searchValue.length === 0 && (
+          <Animated.Text style={[styles.searchPlaceholder, { opacity: fadeAnim }]} pointerEvents="none">
+            {placeholder}
+          </Animated.Text>
+        )}
+        <TextInput 
+          style={styles.searchInput} 
+          value={searchValue}
+          onChangeText={setSearchValue}
+        />
       </View>
     </View>
   );
