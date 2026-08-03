@@ -108,12 +108,12 @@ export function StaticHomeScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.locationRow}>
-          <MaterialIcons name="location-on" size={18} color="#FF4500" />
+          <MaterialIcons name="location-on" size={18} color="#FFFFFF" />
           <Text style={styles.city}>Bangalore</Text>
-          <MaterialIcons name="keyboard-arrow-down" size={18} color="#666" />
+          <MaterialIcons name="keyboard-arrow-down" size={18} color="#FFFFFF" />
         </View>
         <View style={styles.searchBar}>
-          <MaterialIcons name="search" size={20} color="#9E9E9E" style={{ marginRight: 10 }} />
+          <MaterialIcons name="search" size={20} color="#B0B2F2" style={{ marginRight: 10 }} />
           <Text style={styles.searchPlaceholder}>Search Swift</Text>
         </View>
         <View style={styles.avatar}><Text style={styles.avatarText}>PJ</Text></View>
@@ -129,7 +129,7 @@ export function StaticHomeScreen() {
                 <MaterialIcons
                   name={item.icon}
                   size={24}
-                  color={index === 0 ? '#FF4500' : '#555'}
+                  color={index === 0 ? '#282CBA' : '#FFFFFF'}
                 />
               </View>
               <Text style={[styles.qlLabel, index === 0 && styles.qlLabelActive]}>{item.label}</Text>
@@ -212,25 +212,25 @@ const styles = StyleSheet.create({
   scroll: { flex: 1, backgroundColor: '#F7F7F7' },
   content: { paddingBottom: 16 },
   // Header
-  header: { backgroundColor: '#FFF', paddingHorizontal: 16, paddingTop: 12, paddingBottom: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8, elevation: 4, position: 'relative' },
+  header: { backgroundColor: '#282CBA', paddingHorizontal: 16, paddingTop: 12, paddingBottom: 4, zIndex: 10, position: 'relative' },
   locationRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
   pin: { fontSize: 14 },
-  city: { fontSize: 16, fontWeight: '700', color: '#1A1A2E', marginLeft: 4 },
-  chevron: { fontSize: 14, color: '#666', marginLeft: 2 },
-  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F5F5F5', borderRadius: 12, paddingHorizontal: 14, paddingVertical: 11 },
+  city: { fontSize: 16, fontWeight: '700', color: '#FFFFFF', marginLeft: 4 },
+  chevron: { fontSize: 14, color: '#FFFFFF', marginLeft: 2 },
+  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.15)', borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, borderWidth: 1, borderColor: 'rgba(255, 255, 255, 0.2)' },
   searchIcon: { fontSize: 16, marginRight: 10 },
-  searchPlaceholder: { fontSize: 14, color: '#9E9E9E' },
-  avatar: { position: 'absolute', top: 12, right: 16, width: 38, height: 38, borderRadius: 19, backgroundColor: '#FF4500', alignItems: 'center', justifyContent: 'center' },
-  avatarText: { color: '#FFF', fontWeight: '700', fontSize: 14 },
+  searchPlaceholder: { fontSize: 14, color: '#B0B2F2' },
+  avatar: { position: 'absolute', top: 12, right: 16, width: 38, height: 38, borderRadius: 19, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center' },
+  avatarText: { color: '#282CBA', fontWeight: '700', fontSize: 14 },
   // Quicklinks
-  quicklinksWrap: { backgroundColor: '#FFF', paddingBottom: 4, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 4, elevation: 2 },
+  quicklinksWrap: { backgroundColor: '#282CBA', paddingBottom: 4 },
   quicklinksList: { paddingHorizontal: 12, paddingVertical: 12, gap: 8 },
   qlItem: { alignItems: 'center', width: 72, paddingHorizontal: 4 },
-  qlCircle: { width: 50, height: 50, borderRadius: 25, backgroundColor: '#F5F5F5', alignItems: 'center', justifyContent: 'center', marginBottom: 6 },
-  qlCircleActive: { backgroundColor: '#FFF0EB', borderWidth: 2, borderColor: '#FF4500' },
+  qlCircle: { width: 48, height: 48, borderRadius: 24, backgroundColor: 'rgba(255, 255, 255, 0.15)', alignItems: 'center', justifyContent: 'center', marginBottom: 6 },
+  qlCircleActive: { backgroundColor: '#FFFFFF' },
   qlEmoji: { fontSize: 20 },
-  qlLabel: { fontSize: 11, color: '#555', textAlign: 'center', lineHeight: 14, fontWeight: '500' },
-  qlLabelActive: { color: '#FF4500', fontWeight: '700' },
+  qlLabel: { fontSize: 11, color: '#FFFFFF', textAlign: 'center', lineHeight: 14, fontWeight: '500' },
+  qlLabelActive: { fontWeight: '700' },
   // Section header
   sectionHeader: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 20, paddingBottom: 10, gap: 10 },
   sectionTitle: { fontSize: 18, fontWeight: '700', color: '#1A1A2E', letterSpacing: -0.3 },

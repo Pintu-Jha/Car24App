@@ -71,7 +71,7 @@ export function CategoryQuicklinks({ data }: Props) {
                 <MaterialIcons
                   name={iconName}
                   size={24}
-                  color={isActive ? '#FF4500' : '#555'}
+                  color={isActive ? '#282CBA' : '#FFFFFF'}
                 />
               </View>
               <Text style={[styles.label, isActive && styles.labelActive]}>
@@ -88,13 +88,8 @@ export function CategoryQuicklinks({ data }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#282CBA',
     paddingBottom: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 2,
   },
   list: {
     paddingHorizontal: 12,
@@ -107,37 +102,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   iconCircle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#F5F5F5',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 6,
   },
   iconCircleActive: {
-    backgroundColor: '#FFF0EB',
-    borderWidth: 2,
-    borderColor: '#FF4500',
+    backgroundColor: '#FFFFFF',
   },
   label: {
     fontSize: 11,
-    color: '#555',
+    color: '#FFFFFF',
     textAlign: 'center',
     lineHeight: 14,
     fontWeight: '500',
   },
   labelActive: {
-    color: '#FF4500',
     fontWeight: '700',
   },
   activeLine: {
     position: 'absolute',
     bottom: -4,
-    left: 4,
-    right: 4,
+    left: 8,
+    right: 8,
     height: 3,
-    backgroundColor: '#FF4500',
-    borderRadius: 2,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 3,
+    borderTopRightRadius: 3,
   },
 });

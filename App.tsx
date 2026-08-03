@@ -71,7 +71,7 @@ function AppContent() {
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <StatusBar barStyle="light-content" backgroundColor="#282CBA" />
 
       <View style={styles.screenContainer}>
         {screen === 'sdui' && <SDUIHomeScreen useUnknownPayload={false} />}
