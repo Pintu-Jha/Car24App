@@ -108,15 +108,17 @@ export function StaticHomeScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.locationRow}>
-          <MaterialIcons name="location-on" size={18} color="#FFFFFF" />
-          <Text style={styles.city}>Bangalore</Text>
-          <MaterialIcons name="keyboard-arrow-down" size={18} color="#FFFFFF" />
+          <View style={styles.locationLeft}>
+            <MaterialIcons name="location-on" size={18} color="#FFFFFF" />
+            <Text style={styles.city}>Bangalore</Text>
+            <MaterialIcons name="keyboard-arrow-down" size={18} color="#FFFFFF" />
+          </View>
+          <View style={styles.avatar}><Text style={styles.avatarText}>PJ</Text></View>
         </View>
         <View style={styles.searchBar}>
           <MaterialIcons name="search" size={20} color="#B0B2F2" style={{ marginRight: 10 }} />
           <Text style={styles.searchPlaceholder}>Search Swift</Text>
         </View>
-        <View style={styles.avatar}><Text style={styles.avatarText}>PJ</Text></View>
       </View>
 
       {/* Quicklinks */}
@@ -213,15 +215,16 @@ const styles = StyleSheet.create({
   scroll: { flex: 1, backgroundColor: '#F7F7F7' },
   content: { paddingBottom: 16 },
   // Header
-  header: { backgroundColor: '#282CBA', paddingHorizontal: 16, paddingTop: 12, paddingBottom: 4, zIndex: 10, position: 'relative' },
-  locationRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
+  header: { backgroundColor: '#282CBA', paddingHorizontal: 16, paddingTop: 12, paddingBottom: 4, zIndex: 10 },
+  locationRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
+  locationLeft: { flexDirection: 'row', alignItems: 'center', gap: 2 },
   pin: { fontSize: 14 },
-  city: { fontSize: 16, fontWeight: '700', color: '#FFFFFF', marginLeft: 4 },
-  chevron: { fontSize: 14, color: '#FFFFFF', marginLeft: 2 },
+  city: { fontSize: 16, fontWeight: '700', color: '#FFFFFF', marginLeft: 2 },
+  chevron: { fontSize: 14, color: '#FFFFFF' },
   searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.15)', borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, borderWidth: 1, borderColor: 'rgba(255, 255, 255, 0.2)' },
   searchIcon: { fontSize: 16, marginRight: 10 },
   searchPlaceholder: { fontSize: 14, color: '#B0B2F2' },
-  avatar: { position: 'absolute', top: 12, right: 16, width: 38, height: 38, borderRadius: 19, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center' },
+  avatar: { width: 38, height: 38, borderRadius: 19, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center' },
   avatarText: { color: '#282CBA', fontWeight: '700', fontSize: 14 },
   // Quicklinks
   quicklinksWrap: { backgroundColor: '#282CBA' },
