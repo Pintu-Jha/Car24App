@@ -61,7 +61,7 @@ const QUICKLINKS: { id: string; label: string; icon: string }[] = [
 ];
 
 const onPress = (label: string) => {
-  if (__DEV__) {Alert.alert('Tapped', label);}
+  if (__DEV__) { console.log('Tapped', label); }
 };
 
 // ── Sub-components (all inline — no abstraction, that's the point) ─────────────
