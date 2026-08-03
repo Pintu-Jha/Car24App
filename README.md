@@ -1,97 +1,127 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Cars24 SDUI — README
 
-# Getting Started
+> Hiring assignment: a Server-Driven UI system for React Native that renders the Cars24 home screen entirely from a JSON payload.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+---
 
-## Step 1: Start Metro
+## What this is
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+A working SDUI renderer for React Native. The home screen layout, content, and all interactive behaviours are declared in JSON. The client contains no hardcoded screen logic — only a registry of dumb components and a renderer that maps `type` strings to them.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+The grading rubric is: **schema quality (30%) → AI collaboration docs (30%) → generalization (20%) → perf honesty (10%) → ownership (10%)**. This README covers architecture and versioning; see the other docs for the rest.
 
-```sh
-# Using npm
-npm start
+---
 
-# OR using Yarn
-yarn start
-```
+## How to run
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
+```bash
+npm install
+# iOS
+npx pod-install ios && npm run ios
+# Android
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### iOS
+Metro bundler: `npm start`
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+**Dev toggle** (visible in dev builds only): the black bar at the bottom of the tab bar lets you cycle between three states:
+1. **SDUI Home** — renders from `sample-home.json`
+2. **Static Home** — hardcoded twin for perf comparison
+3. **SDUI + Fallback** — renders `with-unknown-component.json` to demo the graceful unknown-type handler
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+---
 
-```sh
-bundle install
+## Architecture
+
+```
+App.tsx
+└── ActionBusProvider        ← React Context + useReducer, app-wide action bus
+    └── SDUIHomeScreen       ← imports JSON, passes to renderer
+        └── SDUIRenderer     ← maps section.type → componentRegistry[type]
+            ├── HeaderSearch
+            ├── CategoryQuicklinks
+            ├── CardRail (×3, different cardStyle)
+            ├── IconRail
+            ├── CardGrid
+            ├── ListRows
+            └── UnknownFallback   ← catch-all, never crashes
 ```
 
-Then, and every time you update your native dependencies, run:
+### Component registry
 
-```sh
-bundle exec pod install
+```ts
+// registry.ts — adding a new type is one line
+const componentRegistry: Record<string, React.ComponentType<any>> = {
+  header_search: HeaderSearch,
+  category_quicklinks: CategoryQuicklinks,
+  card_rail: CardRail,
+  icon_rail: IconRail,
+  card_grid: CardGrid,
+  list_rows: ListRows,
+  section_header: SectionHeader,
+};
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+### ActionBus
 
-```sh
-# Using npm
-npm run ios
+All component interactions go through `dispatch(action: SDUIAction)`. Components never write their own `onPress` logic. The bus handles:
 
-# OR using Yarn
-yarn ios
+| Action type | What happens |
+|---|---|
+| `update_state` | Updates a keyed value in Context state; consumers re-render |
+| `navigate` | `console.log` + `Alert` in dev (real app: `navigation.navigate`) |
+| `compound` | Dispatches each sub-action in sequence |
+| `open_sheet` | Stubbed (real: `@gorhom/bottom-sheet`) |
+| `api_call` | Stubbed (real: `fetch`) |
+| `deep_link` | Stubbed (real: `Linking.openURL`) |
+
+**Why Context + useReducer, not Redux Toolkit?**  
+Redux Toolkit is already in our production stack and is the right call at scale. For a demo with a single page and ~10 state keys, it's ceremony without benefit. The architecture is identical in shape; swapping in Redux Toolkit would be a one-afternoon refactor.
+
+### Style tokens
+
+Raw style values (colours, radii, spacing) **never appear in JSON**. JSON sends semantic tokens (`"cardStyle": "dark"`), and the component maps them to a theme object. This prevents the "marginTop: 12 chaos" anti-pattern where the server controls native layout details it can't reason about.
+
+---
+
+## Versioning story
+
+| Scenario | Behaviour |
+|---|---|
+| Old client + new unknown component type in JSON | `UnknownFallback` renders — page continues, no crash |
+| New client + old server JSON | Registry is additive-only; old types resolve as before |
+| Breaking change (renamed prop) | Server version-gates on `minClientVersion` in meta; serves old schema to old app builds, new schema to new ones |
+| Schema version bump | `schemaVersion` field on every page payload; client can reject or degrade if `schemaVersion` > supported |
+
+This is the same pattern behind Shopify's Polaris SDUI and Airbnb's Ghost Platform, studied per the "prior art research is allowed" FAQ note.
+
+---
+
+## Repo structure
+
 ```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+src/
+├── schema/
+│   ├── types.ts                 ← SDUIPage, SDUISection, SDUIAction (the primary deliverable)
+│   ├── sample-home.json         ← Real Cars24 home data
+│   └── with-unknown-component.json  ← Fallback demo payload
+├── sdui/
+│   ├── ActionBus.tsx            ← Context + useReducer action dispatcher
+│   ├── SDUIRenderer.tsx         ← type → component mapping, visibility eval
+│   ├── registry.ts              ← componentRegistry record
+│   └── UnknownFallback.tsx      ← dev diagnostic card / production null
+├── components/
+│   ├── HeaderSearch.tsx
+│   ├── CategoryQuicklinks.tsx
+│   ├── CardRail.tsx             ← generic, themed via cardStyle prop
+│   ├── IconRail.tsx
+│   ├── CardGrid.tsx
+│   ├── ListRows.tsx
+│   ├── SectionHeader.tsx
+│   └── BottomTabBar.tsx
+├── screens/
+│   ├── SDUIHomeScreen.tsx       ← SDUI-driven
+│   └── StaticHomeScreen.tsx     ← hardcoded twin (for PERF.md)
+└── perf/
+    └── markers.ts               ← TTR/TTI instrumentation
+```
