@@ -9,6 +9,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { markEnd, markStart, printReport } from '../perf/markers';
 import { Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { colors } from '../theme';
 
 // ── Static data (mirrors sample-home.json exactly) ────────────────────────────
 
@@ -209,19 +210,19 @@ export function StaticHomeScreen() {
   });
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#F7F7F7' }}>
+    <View style={{ flex: 1, backgroundColor: colors.background.main }}>
       {/* Header */}
       <View style={[styles.header, { paddingTop: Math.max(insets.top, 12) }]}>
         <View style={styles.locationRow}>
           <View style={styles.locationLeft}>
-            <MaterialIcons name="location-on" size={18} color="#FFFFFF" />
+            <MaterialIcons name="location-on" size={18} color={colors.text.white} />
             <Text style={styles.city}>Bangalore</Text>
-            <MaterialIcons name="keyboard-arrow-down" size={18} color="#FFFFFF" />
+            <MaterialIcons name="keyboard-arrow-down" size={18} color={colors.text.white} />
           </View>
           <View style={styles.avatar}><Text style={styles.avatarText}>PJ</Text></View>
         </View>
         <View style={styles.searchBar}>
-          <MaterialIcons name="search" size={20} color="#B0B2F2" style={{ marginRight: 10 }} />
+          <MaterialIcons name="search" size={20} color={colors.text.placeholder} style={{ marginRight: 10 }} />
           <Text style={styles.searchPlaceholder}>Search Swift</Text>
         </View>
       </View>
@@ -229,10 +230,10 @@ export function StaticHomeScreen() {
       <Tab.Navigator
         screenOptions={{
           tabBarScrollEnabled: true,
-          tabBarStyle: { backgroundColor: '#282CBA', elevation: 0, shadowOpacity: 0 },
+          tabBarStyle: { backgroundColor: colors.brand.primary, elevation: 0, shadowOpacity: 0 },
           tabBarItemStyle: { width: 'auto', paddingHorizontal: 12, paddingBottom: 4 },
-          tabBarLabelStyle: { color: '#FFFFFF', fontSize: 12, fontWeight: '700', textTransform: 'none' },
-          tabBarIndicatorStyle: { backgroundColor: '#FFFFFF', height: 3, borderTopLeftRadius: 3, borderTopRightRadius: 3 },
+          tabBarLabelStyle: { color: colors.text.white, fontSize: 12, fontWeight: '700', textTransform: 'none' },
+          tabBarIndicatorStyle: { backgroundColor: colors.background.card, height: 3, borderTopLeftRadius: 3, borderTopRightRadius: 3 },
         }}
       >
         {QUICKLINKS.map(link => (
@@ -246,7 +247,7 @@ export function StaticHomeScreen() {
                   <MaterialIcons
                     name={link.icon}
                     size={22}
-                    color={focused ? '#282CBA' : '#FFFFFF'}
+                    color={focused ? colors.brand.primary : colors.text.white}
                   />
                 </View>
               )
@@ -263,35 +264,35 @@ export function StaticHomeScreen() {
 
 
 const styles = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: '#F7F7F7' },
+  scroll: { flex: 1, backgroundColor: colors.background.main },
   content: { paddingBottom: 16 },
   // Header
-  header: { backgroundColor: '#282CBA', paddingHorizontal: 16, paddingTop: 12, paddingBottom: 4, zIndex: 10 },
+  header: { backgroundColor: colors.brand.primary, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 4, zIndex: 10 },
   locationRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
   locationLeft: { flexDirection: 'row', alignItems: 'center', gap: 2 },
   pin: { fontSize: 14 },
-  city: { fontSize: 16, fontWeight: '700', color: '#FFFFFF', marginLeft: 2 },
-  chevron: { fontSize: 14, color: '#FFFFFF' },
-  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.15)', borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, borderWidth: 1, borderColor: 'rgba(255, 255, 255, 0.2)' },
+  city: { fontSize: 16, fontWeight: '700', color: colors.text.white, marginLeft: 2 },
+  chevron: { fontSize: 14, color: colors.text.white },
+  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.background.glass, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, borderWidth: 1, borderColor: colors.border.glass },
   searchIcon: { fontSize: 16, marginRight: 10 },
-  searchPlaceholder: { fontSize: 14, color: '#B0B2F2' },
-  avatar: { width: 38, height: 38, borderRadius: 19, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center' },
-  avatarText: { color: '#282CBA', fontWeight: '700', fontSize: 14 },
+  searchPlaceholder: { fontSize: 14, color: colors.text.placeholder },
+  avatar: { width: 38, height: 38, borderRadius: 19, backgroundColor: colors.background.card, alignItems: 'center', justifyContent: 'center' },
+  avatarText: { color: colors.brand.primary, fontWeight: '700', fontSize: 14 },
   // Quicklinks
-  quicklinksWrap: { backgroundColor: '#282CBA' },
+  quicklinksWrap: { backgroundColor: colors.brand.primary },
   quicklinksList: { paddingHorizontal: 12, paddingTop: 12, gap: 8 },
   qlItem: { alignItems: 'center', width: 72, paddingHorizontal: 4, paddingBottom: 16 },
-  qlCircle: { width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(255, 255, 255, 0.15)', alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
-  qlCircleActive: { backgroundColor: '#FFFFFF' },
+  qlCircle: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.background.glass, alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
+  qlCircleActive: { backgroundColor: colors.background.card },
   qlEmoji: { fontSize: 20 },
-  qlLabel: { fontSize: 11, color: '#FFFFFF', textAlign: 'center', lineHeight: 14, fontWeight: '500' },
+  qlLabel: { fontSize: 11, color: colors.text.white, textAlign: 'center', lineHeight: 14, fontWeight: '500' },
   qlLabelActive: { fontWeight: '700' },
-  qlActiveLine: { position: 'absolute', bottom: 0, left: 8, right: 8, height: 3, backgroundColor: '#FFFFFF', borderTopLeftRadius: 3, borderTopRightRadius: 3 },
+  qlActiveLine: { position: 'absolute', bottom: 0, left: 8, right: 8, height: 3, backgroundColor: colors.text.white, borderTopLeftRadius: 3, borderTopRightRadius: 3 },
   // Section header
   sectionHeader: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 20, paddingBottom: 10, gap: 10 },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#1A1A2E', letterSpacing: -0.3 },
-  badge: { backgroundColor: '#FF4500', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 3 },
-  badgeText: { color: '#FFF', fontSize: 11, fontWeight: '700' },
+  sectionTitle: { fontSize: 18, fontWeight: '700', color: colors.text.primary, letterSpacing: -0.3 },
+  badge: { backgroundColor: colors.brand.accent, borderRadius: 20, paddingHorizontal: 10, paddingVertical: 3 },
+  badgeText: { color: colors.text.white, fontSize: 11, fontWeight: '700' },
   // Rail cards
   railList: { paddingHorizontal: 16, paddingBottom: 16, gap: 12 },
   railCard: { width: 140, borderRadius: 14, overflow: 'hidden', shadowColor: '#000', shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.15, shadowRadius: 6, elevation: 5 },
@@ -299,28 +300,28 @@ const styles = StyleSheet.create({
   railCardEmoji: { fontSize: 44 },
   railCardTitle: { fontSize: 13, fontWeight: '600', padding: 10, lineHeight: 18 },
   // Icon rail
-  iconSection: { backgroundColor: '#FFF', marginBottom: 8, paddingBottom: 16 },
+  iconSection: { backgroundColor: colors.background.card, marginBottom: 8, paddingBottom: 16 },
   iconList: { paddingHorizontal: 16, gap: 16 },
   iconItem: { alignItems: 'center', width: 80 },
   iconCircle: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center', marginBottom: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 4, elevation: 3 },
   iconEmoji: { fontSize: 28 },
-  iconLabel: { fontSize: 12, color: '#333', textAlign: 'center', fontWeight: '500', lineHeight: 16 },
+  iconLabel: { fontSize: 12, color: colors.text.secondary, textAlign: 'center', fontWeight: '500', lineHeight: 16 },
   // Grid
-  gridSection: { backgroundColor: '#FFF', marginBottom: 8, paddingBottom: 16 },
+  gridSection: { backgroundColor: colors.background.card, marginBottom: 8, paddingBottom: 16 },
   gridRow: { flexDirection: 'row', paddingHorizontal: 16, gap: 12 },
   gridCard: { flex: 1, borderRadius: 14, padding: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 6, elevation: 3 },
   gridImageBox: { width: 52, height: 52, borderRadius: 26, backgroundColor: 'rgba(255,255,255,0.7)', alignItems: 'center', justifyContent: 'center', marginBottom: 10, borderWidth: 1, borderColor: 'rgba(0,0,0,0.08)' },
   gridEmoji: { fontSize: 26 },
   gridTitle: { fontSize: 14, fontWeight: '700', marginBottom: 4 },
-  gridSubtitle: { fontSize: 12, color: '#666', lineHeight: 17 },
+  gridSubtitle: { fontSize: 12, color: colors.text.secondary, lineHeight: 17 },
   // List rows
-  listSection: { backgroundColor: '#FFF', marginBottom: 8, paddingBottom: 8 },
+  listSection: { backgroundColor: colors.background.card, marginBottom: 8, paddingBottom: 8 },
   listRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, gap: 14 },
-  listRowBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#EEE' },
+  listRowBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border.light },
   listIcon: { width: 48, height: 48, borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   listIconEmoji: { fontSize: 22 },
   listText: { flex: 1 },
-  listTitle: { fontSize: 14, fontWeight: '600', color: '#1A1A2E', marginBottom: 3 },
-  listSubtitle: { fontSize: 12, color: '#777', lineHeight: 17 },
+  listTitle: { fontSize: 14, fontWeight: '600', color: colors.text.primary, marginBottom: 3 },
+  listSubtitle: { fontSize: 12, color: colors.text.secondary, lineHeight: 17 },
   listChevron: { fontSize: 22, color: '#BDBDBD' },
 });

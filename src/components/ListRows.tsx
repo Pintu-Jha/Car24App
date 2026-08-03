@@ -7,6 +7,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SDUIAction, SDUIDataItem } from '../schema/types';
 import { useActionBus } from '../sdui/ActionBus';
 import { SectionHeader } from './SectionHeader';
+import { colors } from '../theme';
 
 interface Header {
   title: string;
@@ -27,9 +28,9 @@ interface Props {
 
 // Map icon name from JSON → MaterialIcons glyph
 const ICON_MAP: Record<string, string> = {
-  'report.png': 'description',
-  'odometer.png': 'speed',
-  'rto.png': 'account-balance',
+  report: 'description',
+  odometer: 'speed',
+  rto: 'account-balance',
 };
 
 const ICON_COLORS = ['#FF8F00', '#2E7D32', '#1565C0'];
@@ -82,7 +83,7 @@ export function ListRows({ header, data }: Props) {
 
 const styles = StyleSheet.create({
   section: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background.card,
     marginBottom: 8,
     paddingBottom: 8,
   },
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
   },
   rowBorder: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#EEEEEE',
+    borderBottomColor: colors.border.light,
   },
   iconBox: {
     width: 48,
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1A1A2E',
+    color: colors.text.primary,
     marginBottom: 3,
   },
   subtitle: {

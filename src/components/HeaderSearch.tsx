@@ -14,6 +14,7 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SDUIDataItem, SDUIAction } from '../schema/types';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { colors } from '../theme';
 
 interface Props {
   city: string;
@@ -54,9 +55,9 @@ export function HeaderSearch({ city, avatarInitials, searchPlaceholders }: Props
       {/* Location row */}
       <View style={styles.locationRow}>
         <View style={styles.locationLeft}>
-          <MaterialIcons name="location-on" size={18} color="#FFFFFF" />
+          <MaterialIcons name="location-on" size={18} color={colors.text.white} />
           <Text style={styles.cityText}>{city}</Text>
-          <MaterialIcons name="keyboard-arrow-down" size={18} color="#FFFFFF" />
+          <MaterialIcons name="keyboard-arrow-down" size={18} color={colors.text.white} />
         </View>
         <TouchableOpacity style={styles.avatar} activeOpacity={0.8}>
           <Text style={styles.avatarText}>{avatarInitials}</Text>
@@ -65,7 +66,7 @@ export function HeaderSearch({ city, avatarInitials, searchPlaceholders }: Props
 
       {/* Search bar */}
       <View style={styles.searchBar}>
-        <MaterialIcons name="search" size={20} color="#B0B2F2" style={styles.searchIconStyle} />
+        <MaterialIcons name="search" size={20} color={colors.text.placeholder} style={styles.searchIconStyle} />
         {searchValue.length === 0 && (
           <Animated.Text style={[styles.searchPlaceholder, { opacity: fadeAnim }]} pointerEvents="none">
             {placeholder}
@@ -75,7 +76,7 @@ export function HeaderSearch({ city, avatarInitials, searchPlaceholders }: Props
           style={styles.searchInput} 
           value={searchValue}
           onChangeText={setSearchValue}
-          placeholderTextColor="#B0B2F2"
+          placeholderTextColor={colors.text.placeholder}
         />
       </View>
     </View>
@@ -84,7 +85,7 @@ export function HeaderSearch({ city, avatarInitials, searchPlaceholders }: Props
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#282CBA',
+    backgroundColor: colors.brand.primary,
     paddingBottom: 4,
     paddingHorizontal: 16,
     zIndex: 10,
@@ -103,19 +104,19 @@ const styles = StyleSheet.create({
   cityText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: colors.text.white,
     marginLeft: 2,
   },
   avatar: {
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background.card,
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarText: {
-    color: '#282CBA',
+    color: colors.brand.primary,
     fontWeight: '700',
     fontSize: 14,
     letterSpacing: 0.5,
@@ -123,27 +124,27 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: colors.background.glass,
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 10,
     position: 'relative',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: colors.border.glass,
   },
   searchIconStyle: {
     marginRight: 10,
   },
   searchPlaceholder: {
     fontSize: 14,
-    color: '#B0B2F2',
+    color: colors.text.placeholder,
     position: 'absolute',
     left: 46,
   },
   searchInput: {
     flex: 1,
     fontSize: 14,
-    color: '#FFFFFF',
+    color: colors.text.white,
     padding: 0,
   },
 });

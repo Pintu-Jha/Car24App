@@ -14,6 +14,7 @@ import {
 import { SDUIAction, SDUIDataItem } from '../schema/types';
 import { useActionBus } from '../sdui/ActionBus';
 import { SectionHeader } from './SectionHeader';
+import { colors } from '../theme';
 
 type CardStyle = 'dark' | 'accent' | 'cream';
 
@@ -43,21 +44,21 @@ const CARD_THEMES: Record<CardStyle, {
   imageBorder: string;
 }> = {
   dark: {
-    bg: '#0F1F33',
-    text: '#FFFFFF',
-    imageBg: '#1A3050',
+    bg: colors.background.darkRail,
+    text: colors.text.white,
+    imageBg: colors.background.darkRailAccent,
     imageBorder: '#2A4A6A',
   },
   accent: {
-    bg: '#1B4332',
-    text: '#FFFFFF',
-    imageBg: '#2D6A4F',
+    bg: colors.background.greenRail,
+    text: colors.text.white,
+    imageBg: colors.background.greenRailAccent,
     imageBorder: '#40916C',
   },
   cream: {
-    bg: '#FFF8F0',
-    text: '#2C2C2C',
-    imageBg: '#FFE8CC',
+    bg: colors.background.creamRail,
+    text: colors.text.primary,
+    imageBg: colors.background.creamRailAccent,
     imageBorder: '#FFCFA0',
   },
 };
@@ -66,16 +67,16 @@ const CARD_THEMES: Record<CardStyle, {
 // Covers the missing image files gracefully for demo purposes.
 function CardImage({ name, theme }: { name: string; theme: typeof CARD_THEMES[CardStyle] }) {
   const emojiMap: Record<string, string> = {
-    'car_suv.png': '🚙',
-    'car_hatch.png': '🚗',
-    'car_sports.png': '🏎',
-    'car_new.png': '🚘',
-    'hand_key.png': '🔑',
-    'cash.png': '💵',
-    'damaged_car.png': '🚧',
-    'pdi.png': '🔍',
-    'check.png': '✅',
-    'history.png': '📋',
+    car_suv: '🚙',
+    car_hatch: '🚗',
+    car_sports: '🏎',
+    car_new: '🚘',
+    hand_key: '🔑',
+    cash: '💵',
+    damaged_car: '🚧',
+    pdi: '🔍',
+    check: '✅',
+    history: '📋',
   };
   return (
     <View style={[styles.imageBox, { backgroundColor: theme.imageBg, borderColor: theme.imageBorder }]}>

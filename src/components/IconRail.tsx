@@ -13,6 +13,7 @@ import {
 import { SDUIAction, SDUIDataItem } from '../schema/types';
 import { useActionBus } from '../sdui/ActionBus';
 import { SectionHeader } from './SectionHeader';
+import { colors } from '../theme';
 
 interface Header {
   title: string;
@@ -31,10 +32,10 @@ interface Props {
 }
 
 const IMAGE_EMOJI: Record<string, string> = {
-  'car_loan.png': '🏦',
-  'car2.png': '🚗',
-  'cash2.png': '💳',
-  'credit.png': '📊',
+  car_loan: '🏦',
+  car2: '🚗',
+  cash2: '💳',
+  credit: '📊',
 };
 
 const CIRCLE_COLORS = ['#E3F2FD', '#FFF3E0', '#E8F5E9', '#F3E5F5'];
@@ -78,7 +79,7 @@ export function IconRail({ header, data }: Props) {
 
 const styles = StyleSheet.create({
   section: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background.card,
     marginBottom: 8,
     paddingBottom: 16,
   },

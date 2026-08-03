@@ -13,6 +13,7 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SDUIAction, SDUIDataItem } from '../schema/types';
 import { useActionBus } from '../sdui/ActionBus';
+import { colors } from '../theme';
 
 // Map icon name from JSON → MaterialIcons glyph name
 const ICON_MAP: Record<string, string> = {
@@ -71,7 +72,7 @@ export function CategoryQuicklinks({ data }: Props) {
                 <MaterialIcons
                   name={iconName}
                   size={24}
-                  color={isActive ? '#282CBA' : '#FFFFFF'}
+                  color={isActive ? colors.brand.primary : colors.text.white}
                 />
               </View>
               <Text style={[styles.label, isActive && styles.labelActive]}>
@@ -88,7 +89,7 @@ export function CategoryQuicklinks({ data }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#282CBA',
+    backgroundColor: colors.brand.primary,
   },
   list: {
     paddingHorizontal: 12,
@@ -105,17 +106,17 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: colors.background.glass,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 6,
   },
   iconCircleActive: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.text.white,
   },
   label: {
     fontSize: 11,
-    color: '#FFFFFF',
+    color: colors.text.white,
     textAlign: 'center',
     lineHeight: 14,
     fontWeight: '500',
@@ -129,7 +130,7 @@ const styles = StyleSheet.create({
     left: 8,
     right: 8,
     height: 3,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.text.white,
     borderTopLeftRadius: 3,
     borderTopRightRadius: 3,
   },

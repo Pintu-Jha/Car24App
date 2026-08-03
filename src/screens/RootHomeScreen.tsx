@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { SDUIHomeScreen } from './SDUIHomeScreen';
 import { StaticHomeScreen } from './StaticHomeScreen';
+import { colors } from '../theme';
 
 type ScreenState = 'sdui' | 'static' | 'sdui_unknown';
 
@@ -43,16 +44,16 @@ export function RootHomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F7F7F7' },
+  container: { flex: 1, backgroundColor: colors.background.main },
   content: { flex: 1 },
   devToggle: {
-    backgroundColor: '#111118',
+    backgroundColor: '#111118', // Keep this explicitly dark as a developer tool
     paddingVertical: 6,
     alignItems: 'center',
     justifyContent: 'center',
   },
   devToggleText: {
-    color: '#FF4500',
+    color: colors.brand.accent,
     fontSize: 12,
     fontWeight: '700',
   },

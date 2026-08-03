@@ -11,6 +11,7 @@ import { ActivityScreen } from '../screens/ActivityScreen';
 import { GarageScreen } from '../screens/GarageScreen';
 import { ShowroomsScreen } from '../screens/ShowroomsScreen';
 import { ExploreScreen } from '../screens/ExploreScreen';
+import { colors } from '../theme';
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -19,16 +20,16 @@ export function BottomTabNavigator() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: '#282CBA', // Cars24 Brand Blue
-        tabBarInactiveTintColor: '#9B9B9B',
+        tabBarActiveTintColor: colors.brand.primary,
+        tabBarInactiveTintColor: colors.text.tabInactive,
         tabBarLabelStyle: {
           fontSize: 10,
           fontWeight: '700',
           marginBottom: 4,
         },
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopColor: '#E0E0E0',
+          backgroundColor: colors.background.card,
+          borderTopColor: colors.border.tabTop,
           borderTopWidth: 1,
           height: 60,
           paddingTop: 8,

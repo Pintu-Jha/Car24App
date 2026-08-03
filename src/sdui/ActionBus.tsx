@@ -8,7 +8,6 @@ import React, {
   useContext,
   useReducer,
 } from 'react';
-import { Alert } from 'react-native';
 import { SDUIAction } from '../schema/types';
 
 // ── State ────────────────────────────────────────────────────────────────────
@@ -40,7 +39,7 @@ interface ActionBusContextValue {
 
 const ActionBusContext = createContext<ActionBusContextValue>({
   state: {},
-  dispatch: () => {},
+  dispatch: () => { },
   getState: () => undefined,
 });
 

@@ -11,6 +11,7 @@ import withUnknown from '../schema/with-unknown-component.json';
 import { SDUIPage } from '../schema/types';
 import { SDUIRenderer } from '../sdui/SDUIRenderer';
 import { markEnd, markStart, printReport } from '../perf/markers';
+import { colors } from '../theme';
 
 // In a real app this would be: fetch('/api/home').then(r => r.json())
 // For this demo we import locally to keep the build self-contained.
@@ -66,10 +67,10 @@ export function SDUIHomeScreen({ useUnknownPayload = false }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
+    backgroundColor: colors.background.main,
   },
   loading: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
+    backgroundColor: colors.background.main,
   },
 });

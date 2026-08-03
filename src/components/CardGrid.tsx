@@ -8,6 +8,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SDUIAction, SDUIDataItem } from '../schema/types';
 import { useActionBus } from '../sdui/ActionBus';
 import { SectionHeader } from './SectionHeader';
+import { colors } from '../theme';
 
 interface Header {
   title: string;
@@ -28,8 +29,8 @@ interface Props {
 }
 
 const IMAGE_ICON: Record<string, string> = {
-  'pdi2.png': 'search',
-  'check2.png': 'verified',
+  pdi2: 'search',
+  check2: 'verified',
 };
 
 const CARD_COLORS = ['#E3F2FD', '#E8F5E9'];
@@ -81,7 +82,7 @@ export function CardGrid({ header, data }: Props) {
 
 const styles = StyleSheet.create({
   section: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background.card,
     marginBottom: 8,
     paddingBottom: 16,
   },
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
   },
   cardSubtitle: {
     fontSize: 12,
-    color: '#666',
+    color: colors.text.secondary,
     lineHeight: 17,
   },
 });

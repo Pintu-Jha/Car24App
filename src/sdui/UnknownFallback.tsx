@@ -6,7 +6,9 @@
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SDUISection } from '../schema/types';
+import { colors } from '../theme';
 
 interface Props {
   section: SDUISection;
@@ -20,15 +22,14 @@ export function UnknownFallback({ section }: Props) {
           <Text style={styles.badgeText}>UNKNOWN COMPONENT</Text>
         </View>
         <Text style={styles.typeLabel}>
-          type: <Text style={styles.typeValue}>"{section.type}"</Text>
-        </Text>
-        <Text style={styles.propsLabel}>props:</Text>
-        <Text style={styles.propsValue}>
-          {JSON.stringify(section.props, null, 2)}
+          Type: <Text style={styles.typeValue}>{section.type}</Text>
         </Text>
         <Text style={styles.hint}>
-          Register this type in registry.ts to render it.
+          The renderer encountered a component type it doesn't recognize. Instead of crashing, it safely rendered this fallback block.
         </Text>
+        <View style={styles.iconBox}>
+          <MaterialIcons name="bug-report" size={24} color={colors.status.error} />
+        </View>
       </View>
     );
   }
@@ -38,55 +39,46 @@ export function UnknownFallback({ section }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 12,
-    padding: 14,
+    margin: 16,
+    padding: 16,
     borderWidth: 2,
-    borderColor: '#FF8F00',
+    borderColor: colors.status.warning,
     borderStyle: 'dashed',
     borderRadius: 10,
-    backgroundColor: '#FFF8E1',
+    backgroundColor: colors.background.unknown,
   },
   badge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#FF8F00',
+    backgroundColor: colors.status.warning,
     borderRadius: 4,
     paddingHorizontal: 8,
     paddingVertical: 3,
     marginBottom: 10,
   },
   badgeText: {
-    color: '#FFF',
+    color: colors.text.white,
     fontSize: 10,
     fontWeight: '700',
     letterSpacing: 0.5,
   },
   typeLabel: {
     fontSize: 13,
-    color: '#5D4037',
+    color: colors.text.unknownPrimary,
     marginBottom: 6,
   },
   typeValue: {
     fontWeight: '700',
-    color: '#E65100',
-  },
-  propsLabel: {
-    fontSize: 12,
-    color: '#5D4037',
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  propsValue: {
-    fontFamily: 'monospace',
-    fontSize: 11,
-    color: '#4E342E',
-    backgroundColor: '#FFECB3',
-    padding: 8,
-    borderRadius: 4,
-    marginBottom: 8,
+    color: colors.text.unknownSecondary,
   },
   hint: {
     fontSize: 11,
     color: '#8D6E63',
     fontStyle: 'italic',
+  },
+  iconBox: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    opacity: 0.2,
   },
 });

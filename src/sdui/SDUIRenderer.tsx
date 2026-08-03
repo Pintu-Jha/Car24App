@@ -3,11 +3,11 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SDUIPage, SDUISection } from '../schema/types';
 import { useActionBus } from './ActionBus';
 import { componentRegistry } from './registry';
 import { UnknownFallback } from './UnknownFallback';
+import { colors } from '../theme';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -39,10 +39,10 @@ export function SDUIRenderer({ page }: Props) {
   return (
     <View style={styles.container}>
       {HeaderComponent && headerSection && (
-        <HeaderComponent 
-          {...headerSection.props} 
-          data={headerSection.data} 
-          action={headerSection.action} 
+        <HeaderComponent
+          {...headerSection.props}
+          data={headerSection.data}
+          action={headerSection.action}
         />
       )}
 
@@ -50,28 +50,28 @@ export function SDUIRenderer({ page }: Props) {
         <Tab.Navigator
           screenOptions={{
             tabBarScrollEnabled: true,
-            tabBarStyle: { backgroundColor: '#282CBA', elevation: 0, shadowOpacity: 0 },
+            tabBarStyle: { backgroundColor: colors.brand.primary, elevation: 0, shadowOpacity: 0 },
             tabBarItemStyle: { width: 'auto', paddingHorizontal: 12, paddingBottom: 4 },
-            tabBarLabelStyle: { color: '#FFFFFF', fontSize: 12, fontWeight: '700', textTransform: 'none' },
-            tabBarIndicatorStyle: { backgroundColor: '#FFFFFF', height: 3, borderTopLeftRadius: 3, borderTopRightRadius: 3 },
+            tabBarLabelStyle: { color: colors.text.white, fontSize: 12, fontWeight: '700', textTransform: 'none' },
+            tabBarIndicatorStyle: { backgroundColor: colors.background.card, height: 3, borderTopLeftRadius: 3, borderTopRightRadius: 3 },
           }}
         >
           {quicklinksSection.data.map(quicklink => {
             // Mock the activeTab state so SDUI rendering rules apply accurately per tab
             const mockState = { ...state, activeTab: quicklink.id };
-            
+
             return (
-              <Tab.Screen 
-                key={quicklink.id} 
+              <Tab.Screen
+                key={quicklink.id}
                 name={quicklink.id}
-                options={{ 
+                options={{
                   tabBarLabel: quicklink.props.label as string,
                   tabBarIcon: ({ focused }) => (
                     <View style={[styles.qlCircle, focused && styles.qlCircleActive]}>
                       <MaterialIcons
                         name={QUICKLINK_ICON_MAP[quicklink.props.icon as string] || 'help-outline'}
                         size={22}
-                        color={focused ? '#282CBA' : '#FFFFFF'}
+                        color={focused ? colors.brand.primary : colors.text.white}
                       />
                     </View>
                   )
@@ -111,7 +111,7 @@ export function SDUIRenderer({ page }: Props) {
             .map(section => {
               const Component = componentRegistry[section.type];
               if (!Component) return <UnknownFallback key={section.id} section={section} />;
-              
+
               return (
                 <Component
                   key={section.id}
@@ -129,7 +129,7 @@ export function SDUIRenderer({ page }: Props) {
 
 function isVisible(section: SDUISection, state: Record<string, unknown>): boolean {
   if (!section.visible) return true;
-  
+
   const val = state[section.visible.stateKey];
   if (section.visible.equals !== undefined) {
     return val === section.visible.equals;
@@ -143,25 +143,25 @@ function isVisible(section: SDUISection, state: Record<string, unknown>): boolea
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
+    backgroundColor: colors.background.main,
   },
   scroll: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
+    backgroundColor: colors.background.main,
   },
   content: {
     paddingBottom: 16,
   },
-  qlCircle: { 
-    width: 44, 
-    height: 44, 
-    borderRadius: 22, 
-    backgroundColor: 'rgba(255, 255, 255, 0.15)', 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    marginBottom: 4 
+  qlCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.background.glass,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4
   },
-  qlCircleActive: { 
-    backgroundColor: '#FFFFFF' 
+  qlCircleActive: {
+    backgroundColor: colors.background.card
   },
 });
