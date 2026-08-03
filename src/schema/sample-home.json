@@ -17,28 +17,16 @@
       "type": "category_quicklinks",
       "props": { "activeId": "all" },
       "data": [
-        { "id": "all", "props": { "label": "All", "icon": "grid" } },
+        { "id": "all", "props": { "label": "All", "icon": "grid" }, "action": { "type": "update_state", "stateKey": "activeTab", "value": "all" } },
         {
           "id": "buy",
           "props": { "label": "Buy used car", "icon": "car" },
-          "action": {
-            "type": "compound",
-            "actions": [
-              { "type": "update_state", "stateKey": "activeTab", "value": "buy" },
-              { "type": "navigate", "screen": "BuyUsedCar" }
-            ]
-          }
+          "action": { "type": "update_state", "stateKey": "activeTab", "value": "buy" }
         },
         {
           "id": "sell",
           "props": { "label": "Sell car", "icon": "key" },
-          "action": {
-            "type": "compound",
-            "actions": [
-              { "type": "update_state", "stateKey": "activeTab", "value": "sell" },
-              { "type": "navigate", "screen": "SellCar" }
-            ]
-          }
+          "action": { "type": "update_state", "stateKey": "activeTab", "value": "sell" }
         },
         {
           "id": "loans",
@@ -65,6 +53,7 @@
     {
       "id": "buy_car_rail",
       "type": "card_rail",
+      "visible": { "stateKey": "activeTab", "in": ["all", "buy"] },
       "props": {
         "header": { "title": "Buy car", "badge": "Up to ₹80,000 off" },
         "cardStyle": "dark"
@@ -95,6 +84,7 @@
     {
       "id": "sell_car_rail",
       "type": "card_rail",
+      "visible": { "stateKey": "activeTab", "in": ["all", "sell"] },
       "props": { "header": { "title": "Sell your car" }, "cardStyle": "accent" },
       "data": [
         {
@@ -117,6 +107,7 @@
     {
       "id": "loans_rail",
       "type": "icon_rail",
+      "visible": { "stateKey": "activeTab", "in": ["all", "loans"] },
       "props": { "header": { "title": "Get loans" } },
       "data": [
         {
@@ -156,6 +147,7 @@
     {
       "id": "car_check_rail",
       "type": "card_rail",
+      "visible": { "stateKey": "activeTab", "in": ["all", "car_check"] },
       "props": { "header": { "title": "Car check services" }, "cardStyle": "cream" },
       "data": [
         {
@@ -178,6 +170,7 @@
     {
       "id": "smart_checks_grid",
       "type": "card_grid",
+      "visible": { "stateKey": "activeTab", "in": ["all", "buy", "car_check"] },
       "props": { "header": { "title": "Buy smarter with our checks" }, "columns": 2 },
       "data": [
         {
@@ -203,6 +196,7 @@
     {
       "id": "fraud_list",
       "type": "list_rows",
+      "visible": { "stateKey": "activeTab", "in": ["all", "buy", "car_check"] },
       "props": { "header": { "title": "Uncover frauds before you buy" } },
       "data": [
         {

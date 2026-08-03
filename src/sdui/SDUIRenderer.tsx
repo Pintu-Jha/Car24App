@@ -53,7 +53,14 @@ function isVisible(section: SDUISection, state: Record<string, unknown>): boolea
   if (!section.visible) {
     return true;
   }
-  return state[section.visible.stateKey] === section.visible.equals;
+  const val = state[section.visible.stateKey];
+  if (section.visible.equals !== undefined) {
+    return val === section.visible.equals;
+  }
+  if (section.visible.in !== undefined) {
+    return section.visible.in.includes(val);
+  }
+  return true;
 }
 
 const styles = StyleSheet.create({

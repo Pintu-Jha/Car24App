@@ -46,5 +46,6 @@ export type SDUIAction =
 
 export interface SDUICondition {
   stateKey: string;
-  equals: unknown;
+  equals?: unknown;
+  in?: unknown[];
 }
