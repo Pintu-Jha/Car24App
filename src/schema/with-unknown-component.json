@@ -1,0 +1,444 @@
+{
+  "schemaVersion": "1.0.0",
+  "pageId": "home",
+  "meta": {
+    "title": "Cars24 Home",
+    "minClientVersion": "1.0.0"
+  },
+  "sections": [
+    {
+      "id": "header",
+      "type": "header_search",
+      "props": {
+        "city": "Bangalore",
+        "avatarInitials": "PJ",
+        "searchPlaceholders": [
+          "Search Swift",
+          "Search Alto",
+          "Search Baleno"
+        ]
+      }
+    },
+    {
+      "id": "quicklinks",
+      "type": "category_quicklinks",
+      "props": {
+        "activeId": "all"
+      },
+      "data": [
+        {
+          "id": "all",
+          "props": {
+            "label": "All",
+            "icon": "grid"
+          }
+        },
+        {
+          "id": "buy",
+          "props": {
+            "label": "Buy used car",
+            "icon": "car"
+          },
+          "action": {
+            "type": "compound",
+            "actions": [
+              {
+                "type": "update_state",
+                "stateKey": "activeTab",
+                "value": "buy"
+              },
+              {
+                "type": "navigate",
+                "screen": "BuyUsedCar"
+              }
+            ]
+          }
+        },
+        {
+          "id": "sell",
+          "props": {
+            "label": "Sell car",
+            "icon": "key"
+          },
+          "action": {
+            "type": "compound",
+            "actions": [
+              {
+                "type": "update_state",
+                "stateKey": "activeTab",
+                "value": "sell"
+              },
+              {
+                "type": "navigate",
+                "screen": "SellCar"
+              }
+            ]
+          }
+        },
+        {
+          "id": "loans",
+          "props": {
+            "label": "Loans",
+            "icon": "money-bag"
+          },
+          "action": {
+            "type": "update_state",
+            "stateKey": "activeTab",
+            "value": "loans"
+          }
+        },
+        {
+          "id": "challan",
+          "props": {
+            "label": "Challan",
+            "icon": "document"
+          },
+          "action": {
+            "type": "update_state",
+            "stateKey": "activeTab",
+            "value": "challan"
+          }
+        },
+        {
+          "id": "car_check",
+          "props": {
+            "label": "Car check",
+            "icon": "wrench"
+          },
+          "action": {
+            "type": "update_state",
+            "stateKey": "activeTab",
+            "value": "car_check"
+          }
+        },
+        {
+          "id": "insurance",
+          "props": {
+            "label": "Insurance",
+            "icon": "shield"
+          },
+          "action": {
+            "type": "update_state",
+            "stateKey": "activeTab",
+            "value": "insurance"
+          }
+        }
+      ]
+    },
+    {
+      "id": "mystery_widget",
+      "type": "mystery_widget",
+      "props": {
+        "message": "This type is not in the registry",
+        "version": "2.0",
+        "experimental": true
+      }
+    },
+    {
+      "id": "buy_car_rail",
+      "type": "card_rail",
+      "props": {
+        "header": {
+          "title": "Buy car",
+          "badge": "Up to ₹80,000 off"
+        },
+        "cardStyle": "dark"
+      },
+      "data": [
+        {
+          "id": "all_used",
+          "props": {
+            "title": "All used cars",
+            "image": "car_suv"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "Listing",
+            "params": {
+              "filter": "all"
+            }
+          }
+        },
+        {
+          "id": "budget",
+          "props": {
+            "title": "Budget used cars",
+            "image": "car_hatch"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "Listing",
+            "params": {
+              "filter": "budget"
+            }
+          }
+        },
+        {
+          "id": "premium",
+          "props": {
+            "title": "Premium used cars",
+            "image": "car_sports"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "Listing",
+            "params": {
+              "filter": "premium"
+            }
+          }
+        },
+        {
+          "id": "new_cars",
+          "props": {
+            "title": "New cars",
+            "image": "car_new"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "Listing",
+            "params": {
+              "filter": "new"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sell_car_rail",
+      "type": "card_rail",
+      "props": {
+        "header": {
+          "title": "Sell your car"
+        },
+        "cardStyle": "accent"
+      },
+      "data": [
+        {
+          "id": "sell",
+          "props": {
+            "title": "Sell your car",
+            "image": "hand_key"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "SellCar"
+          }
+        },
+        {
+          "id": "valuation",
+          "props": {
+            "title": "Check car valuation",
+            "image": "cash"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "Valuation"
+          }
+        },
+        {
+          "id": "scrap",
+          "props": {
+            "title": "Scrap your car",
+            "image": "damaged_car"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "Scrap"
+          }
+        }
+      ]
+    },
+    {
+      "id": "loans_rail",
+      "type": "icon_rail",
+      "props": {
+        "header": {
+          "title": "Get loans"
+        }
+      },
+      "data": [
+        {
+          "id": "used_car_loan",
+          "props": {
+            "label": "Used car loan",
+            "image": "car_loan"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "Loans",
+            "params": {
+              "type": "used_car"
+            }
+          }
+        },
+        {
+          "id": "loan_against_car",
+          "props": {
+            "label": "Loan against car",
+            "image": "car2"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "Loans",
+            "params": {
+              "type": "against_car"
+            }
+          }
+        },
+        {
+          "id": "personal_loan",
+          "props": {
+            "label": "Personal loan",
+            "image": "cash2"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "Loans",
+            "params": {
+              "type": "personal"
+            }
+          }
+        },
+        {
+          "id": "credit_score",
+          "props": {
+            "label": "Credit score",
+            "image": "credit"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "CreditScore"
+          }
+        }
+      ]
+    },
+    {
+      "id": "car_check_rail",
+      "type": "card_rail",
+      "props": {
+        "header": {
+          "title": "Car check services"
+        },
+        "cardStyle": "cream"
+      },
+      "data": [
+        {
+          "id": "new_pdi",
+          "props": {
+            "title": "New car PDI",
+            "image": "pdi"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "PDI"
+          }
+        },
+        {
+          "id": "used_check",
+          "props": {
+            "title": "Used car check",
+            "image": "check"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "UsedCarCheck"
+          }
+        },
+        {
+          "id": "vehicle_history",
+          "props": {
+            "title": "Vehicle history",
+            "image": "history"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "VehicleHistory"
+          }
+        }
+      ]
+    },
+    {
+      "id": "smart_checks_grid",
+      "type": "card_grid",
+      "props": {
+        "header": {
+          "title": "Buy smarter with our checks"
+        },
+        "columns": 2
+      },
+      "data": [
+        {
+          "id": "pdi_grid",
+          "props": {
+            "title": "New car PDI",
+            "subtitle": "Pre delivery inspection",
+            "image": "pdi2"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "PDI"
+          }
+        },
+        {
+          "id": "used_check_grid",
+          "props": {
+            "title": "Used car check",
+            "subtitle": "300+ point evaluation",
+            "image": "check2"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "UsedCarCheck"
+          }
+        }
+      ]
+    },
+    {
+      "id": "fraud_list",
+      "type": "list_rows",
+      "props": {
+        "header": {
+          "title": "Uncover frauds before you buy"
+        }
+      },
+      "data": [
+        {
+          "id": "vhr",
+          "props": {
+            "title": "Vehicle history report",
+            "subtitle": "Service records and Accidental check",
+            "icon": "report"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "VehicleHistoryReport"
+          }
+        },
+        {
+          "id": "odometer",
+          "props": {
+            "title": "Odometer fraud check",
+            "subtitle": "20% cars show odometer fraud",
+            "icon": "odometer"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "OdometerCheck"
+          }
+        },
+        {
+          "id": "rto",
+          "props": {
+            "title": "RTO check",
+            "subtitle": "15% cars have RC mismatches",
+            "icon": "rto"
+          },
+          "action": {
+            "type": "navigate",
+            "screen": "RTOCheck"
+          }
+        }
+      ]
+    }
+  ]
+}
