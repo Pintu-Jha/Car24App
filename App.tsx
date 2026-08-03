@@ -15,7 +15,8 @@
 import React, { useState } from 'react';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar, StyleSheet, View } from 'react-native';
-import { ActionBusProvider } from './src/sdui/ActionBus';
+import { ActionBusProvider, useActionBus } from './src/sdui/ActionBus';
+import { TouchableOpacity, Text } from 'react-native';
 import { SDUIHomeScreen } from './src/screens/SDUIHomeScreen';
 import { StaticHomeScreen } from './src/screens/StaticHomeScreen';
 import { BottomTabBar } from './src/components/BottomTabBar';
@@ -28,7 +29,29 @@ const SCREEN_LABELS: Record<ActiveScreen, string> = {
   sdui_unknown: '▶ Fallback demo → SDUI normal',
 };
 
+function EmptyScreen({ routeName }: { routeName: string }) {
+  const { dispatch } = useActionBus();
+  const insets = useSafeAreaInsets();
+  
+  return (
+    <View style={[styles.root, { paddingTop: insets.top, alignItems: 'center', justifyContent: 'center' }]}>
+      <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#1A1A2E' }}>{routeName}</Text>
+      <Text style={{ fontSize: 14, color: '#666', marginTop: 8, marginBottom: 30 }}>
+        This screen is intentionally empty.
+      </Text>
+      
+      <TouchableOpacity 
+        style={{ paddingHorizontal: 24, paddingVertical: 12, backgroundColor: '#FF4500', borderRadius: 8 }}
+        onPress={() => dispatch({ type: 'update_state', stateKey: 'currentRoute', value: null })}
+      >
+        <Text style={{ color: '#FFF', fontWeight: 'bold', fontSize: 16 }}>Go Back</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
 function AppContent() {
+  const { state } = useActionBus();
   const insets = useSafeAreaInsets();
   const [screen, setScreen] = useState<ActiveScreen>('sdui');
 
@@ -39,6 +62,12 @@ function AppContent() {
       return 'sdui';
     });
   };
+
+  const currentRoute = state['currentRoute'] as string | undefined | null;
+
+  if (currentRoute) {
+    return <EmptyScreen routeName={currentRoute} />;
+  }
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>

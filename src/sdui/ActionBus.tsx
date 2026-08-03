@@ -56,15 +56,8 @@ export function ActionBusProvider({ children }: { children: React.ReactNode }) {
         break;
 
       case 'navigate':
-        // In a real app: navigation.navigate(action.screen, action.params)
-        // For this demo, log + show an alert so the intent is visible on camera.
         console.log('[SDUI] navigate →', action.screen, action.params ?? '');
-        if (__DEV__) {
-          Alert.alert(
-            'Navigate',
-            `→ ${action.screen}${action.params ? '\n' + JSON.stringify(action.params) : ''}`,
-          );
-        }
+        dispatchInternal({ type: 'UPDATE_STATE', key: 'currentRoute', value: action.screen });
         break;
 
       case 'compound':
