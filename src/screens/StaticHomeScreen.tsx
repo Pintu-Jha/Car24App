@@ -133,6 +133,7 @@ export function StaticHomeScreen() {
                 />
               </View>
               <Text style={[styles.qlLabel, index === 0 && styles.qlLabelActive]}>{item.label}</Text>
+              {index === 0 && <View style={styles.qlActiveLine} />}
             </TouchableOpacity>
           )} />
       </View>
@@ -223,14 +224,15 @@ const styles = StyleSheet.create({
   avatar: { position: 'absolute', top: 12, right: 16, width: 38, height: 38, borderRadius: 19, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center' },
   avatarText: { color: '#282CBA', fontWeight: '700', fontSize: 14 },
   // Quicklinks
-  quicklinksWrap: { backgroundColor: '#282CBA', paddingBottom: 4 },
-  quicklinksList: { paddingHorizontal: 12, paddingVertical: 12, gap: 8 },
-  qlItem: { alignItems: 'center', width: 72, paddingHorizontal: 4 },
+  quicklinksWrap: { backgroundColor: '#282CBA' },
+  quicklinksList: { paddingHorizontal: 12, paddingTop: 12, gap: 8 },
+  qlItem: { alignItems: 'center', width: 72, paddingHorizontal: 4, paddingBottom: 16 },
   qlCircle: { width: 48, height: 48, borderRadius: 24, backgroundColor: 'rgba(255, 255, 255, 0.15)', alignItems: 'center', justifyContent: 'center', marginBottom: 6 },
   qlCircleActive: { backgroundColor: '#FFFFFF' },
   qlEmoji: { fontSize: 20 },
   qlLabel: { fontSize: 11, color: '#FFFFFF', textAlign: 'center', lineHeight: 14, fontWeight: '500' },
   qlLabelActive: { fontWeight: '700' },
+  qlActiveLine: { position: 'absolute', bottom: 0, left: 8, right: 8, height: 3, backgroundColor: '#FFFFFF', borderTopLeftRadius: 3, borderTopRightRadius: 3 },
   // Section header
   sectionHeader: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 20, paddingBottom: 10, gap: 10 },
   sectionTitle: { fontSize: 18, fontWeight: '700', color: '#1A1A2E', letterSpacing: -0.3 },

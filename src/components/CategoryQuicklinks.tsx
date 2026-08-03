@@ -89,17 +89,17 @@ export function CategoryQuicklinks({ data }: Props) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#282CBA',
-    paddingBottom: 4,
   },
   list: {
     paddingHorizontal: 12,
-    paddingVertical: 12,
+    paddingTop: 12,
     gap: 8,
   },
   item: {
     alignItems: 'center',
     width: 72,
     paddingHorizontal: 4,
+    paddingBottom: 16,
   },
   iconCircle: {
     width: 48,
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   },
   activeLine: {
     position: 'absolute',
-    bottom: -4,
+    bottom: 0,
     left: 8,
     right: 8,
     height: 3,
