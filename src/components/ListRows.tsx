@@ -27,9 +27,9 @@ interface Props {
 
 // Map icon name from JSON → MaterialIcons glyph
 const ICON_MAP: Record<string, string> = {
-  report: 'description',
-  odometer: 'speed',
-  rto: 'account-balance',
+  'report.png': 'description',
+  'odometer.png': 'speed',
+  'rto.png': 'account-balance',
 };
 
 const ICON_COLORS = ['#FF8F00', '#2E7D32', '#1565C0'];

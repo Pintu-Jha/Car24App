@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SDUIAction, SDUIDataItem } from '../schema/types';
 import { useActionBus } from '../sdui/ActionBus';
 import { SectionHeader } from './SectionHeader';
@@ -26,9 +27,9 @@ interface Props {
   action?: SDUIAction;
 }
 
-const IMAGE_EMOJI: Record<string, string> = {
-  pdi2: '🔍',
-  check2: '✅',
+const IMAGE_ICON: Record<string, string> = {
+  'pdi2.png': 'search',
+  'check2.png': 'verified',
 };
 
 const CARD_COLORS = ['#E3F2FD', '#E8F5E9'];
@@ -62,9 +63,7 @@ export function CardGrid({ header, data }: Props) {
                   onPress={() => item.action && dispatch(item.action)}
                   activeOpacity={0.8}>
                   <View style={[styles.imageBox, { borderColor: accent + '40' }]}>
-                    <Text style={styles.emoji}>
-                      {IMAGE_EMOJI[props.image] ?? '🚗'}
-                    </Text>
+                    <MaterialIcons name={IMAGE_ICON[props.image] ?? 'help-outline'} size={28} color={accent} />
                   </View>
                   <Text style={[styles.cardTitle, { color: accent }]}>{props.title}</Text>
                   <Text style={styles.cardSubtitle} numberOfLines={2}>{props.subtitle}</Text>

@@ -66,16 +66,16 @@ const CARD_THEMES: Record<CardStyle, {
 // Covers the missing image files gracefully for demo purposes.
 function CardImage({ name, theme }: { name: string; theme: typeof CARD_THEMES[CardStyle] }) {
   const emojiMap: Record<string, string> = {
-    car_suv: '🚙',
-    car_hatch: '🚗',
-    car_sports: '🏎',
-    car_new: '🚘',
-    hand_key: '🔑',
-    cash: '💵',
-    damaged_car: '🚧',
-    pdi: '🔍',
-    check: '✅',
-    history: '📋',
+    'car_suv.png': '🚙',
+    'car_hatch.png': '🚗',
+    'car_sports.png': '🏎',
+    'car_new.png': '🚘',
+    'hand_key.png': '🔑',
+    'cash.png': '💵',
+    'damaged_car.png': '🚧',
+    'pdi.png': '🔍',
+    'check.png': '✅',
+    'history.png': '📋',
   };
   return (
     <View style={[styles.imageBox, { backgroundColor: theme.imageBg, borderColor: theme.imageBorder }]}>
