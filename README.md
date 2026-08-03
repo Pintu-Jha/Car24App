@@ -21,7 +21,7 @@ As the schema evolves, older app versions will inevitably receive JSON payloads 
 
 ## Project Setup
 1. `npm install` or `yarn install`
-2. `npx expo start`
+2. `npm run ios` or `npm run android`
 
 ## Testing the Capabilities
 The app includes a built-in Developer Toggle at the bottom of the screen to swap between three states instantly:
