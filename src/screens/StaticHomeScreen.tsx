@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
   quicklinksWrap: { backgroundColor: '#282CBA' },
   quicklinksList: { paddingHorizontal: 12, paddingTop: 12, gap: 8 },
   qlItem: { alignItems: 'center', width: 72, paddingHorizontal: 4, paddingBottom: 16 },
-  qlCircle: { width: 48, height: 48, borderRadius: 24, backgroundColor: 'rgba(255, 255, 255, 0.15)', alignItems: 'center', justifyContent: 'center', marginBottom: 6 },
+  qlCircle: { width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(255, 255, 255, 0.15)', alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
   qlCircleActive: { backgroundColor: '#FFFFFF' },
   qlEmoji: { fontSize: 20 },
   qlLabel: { fontSize: 11, color: '#FFFFFF', textAlign: 'center', lineHeight: 14, fontWeight: '500' },
