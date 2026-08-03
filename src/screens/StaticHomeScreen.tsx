@@ -5,6 +5,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { markEnd, markStart, printReport } from '../perf/markers';
 import { Alert } from 'react-native';
 
@@ -23,11 +24,11 @@ const SELL_CARDS = [
   { id: '3', title: 'Scrap your car', emoji: '🚧' },
 ];
 
-const LOAN_ITEMS = [
-  { id: '1', label: 'Used car loan', emoji: '🏦', bg: '#E3F2FD' },
-  { id: '2', label: 'Loan against car', emoji: '🚗', bg: '#FFF3E0' },
-  { id: '3', label: 'Personal loan', emoji: '💳', bg: '#E8F5E9' },
-  { id: '4', label: 'Credit score', emoji: '📊', bg: '#F3E5F5' },
+const LOAN_ITEMS: { id: string; label: string; icon: string; bg: string }[] = [
+  { id: '1', label: 'Used car loan', icon: 'account-balance', bg: '#E3F2FD' },
+  { id: '2', label: 'Loan against car', icon: 'directions-car', bg: '#FFF3E0' },
+  { id: '3', label: 'Personal loan', icon: 'credit-card', bg: '#E8F5E9' },
+  { id: '4', label: 'Credit score', icon: 'bar-chart', bg: '#F3E5F5' },
 ];
 
 const CHECK_CARDS = [
@@ -37,24 +38,24 @@ const CHECK_CARDS = [
 ];
 
 const GRID_CARDS = [
-  { id: '1', title: 'New car PDI', subtitle: 'Pre delivery inspection', emoji: '🔍', bg: '#E3F2FD', accent: '#1565C0' },
-  { id: '2', title: 'Used car check', subtitle: '300+ point evaluation', emoji: '✅', bg: '#E8F5E9', accent: '#1B5E20' },
+  { id: '1', title: 'New car PDI', subtitle: 'Pre delivery inspection', emoji: 'search', bg: '#E3F2FD', accent: '#1565C0' },
+  { id: '2', title: 'Used car check', subtitle: '300+ point evaluation', emoji: 'verified', bg: '#E8F5E9', accent: '#1B5E20' },
 ];
 
 const FRAUD_ROWS = [
-  { id: '1', title: 'Vehicle history report', subtitle: 'Service records and Accidental check', emoji: '📃', bg: '#FFF3E0' },
-  { id: '2', title: 'Odometer fraud check', subtitle: '20% cars show odometer fraud', emoji: '🔢', bg: '#E8F5E9' },
-  { id: '3', title: 'RTO check', subtitle: '15% cars have RC mismatches', emoji: '🏛', bg: '#E3F2FD' },
+  { id: '1', title: 'Vehicle history report', subtitle: 'Service records and Accidental check', icon: 'description', iconColor: '#FF8F00', bg: '#FFF3E0' },
+  { id: '2', title: 'Odometer fraud check', subtitle: '20% cars show odometer fraud', icon: 'speed', iconColor: '#2E7D32', bg: '#E8F5E9' },
+  { id: '3', title: 'RTO check', subtitle: '15% cars have RC mismatches', icon: 'account-balance', iconColor: '#1565C0', bg: '#E3F2FD' },
 ];
 
-const QUICKLINKS = [
-  { id: 'all', label: 'All', emoji: '◼' },
-  { id: 'buy', label: 'Buy used car', emoji: '🚗' },
-  { id: 'sell', label: 'Sell car', emoji: '🔑' },
-  { id: 'loans', label: 'Loans', emoji: '💰' },
-  { id: 'challan', label: 'Challan', emoji: '📋' },
-  { id: 'car_check', label: 'Car check', emoji: '🔧' },
-  { id: 'insurance', label: 'Insurance', emoji: '🛡' },
+const QUICKLINKS: { id: string; label: string; icon: string }[] = [
+  { id: 'all', label: 'All', icon: 'apps' },
+  { id: 'buy', label: 'Buy used car', icon: 'directions-car' },
+  { id: 'sell', label: 'Sell car', icon: 'vpn-key' },
+  { id: 'loans', label: 'Loans', icon: 'account-balance-wallet' },
+  { id: 'challan', label: 'Challan', icon: 'description' },
+  { id: 'car_check', label: 'Car check', icon: 'build' },
+  { id: 'insurance', label: 'Insurance', icon: 'security' },
 ];
 
 const onPress = (label: string) => {
@@ -107,12 +108,12 @@ export function StaticHomeScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.locationRow}>
-          <Text style={styles.pin}>📍</Text>
+          <MaterialIcons name="location-on" size={18} color="#FF4500" />
           <Text style={styles.city}>Bangalore</Text>
-          <Text style={styles.chevron}>▾</Text>
+          <MaterialIcons name="keyboard-arrow-down" size={18} color="#666" />
         </View>
         <View style={styles.searchBar}>
-          <Text style={styles.searchIcon}>🔍</Text>
+          <MaterialIcons name="search" size={20} color="#9E9E9E" style={{ marginRight: 10 }} />
           <Text style={styles.searchPlaceholder}>Search Swift</Text>
         </View>
         <View style={styles.avatar}><Text style={styles.avatarText}>PJ</Text></View>
@@ -125,7 +126,11 @@ export function StaticHomeScreen() {
           renderItem={({ item, index }) => (
             <TouchableOpacity style={styles.qlItem} onPress={() => onPress(item.label)} activeOpacity={0.7}>
               <View style={[styles.qlCircle, index === 0 && styles.qlCircleActive]}>
-                <Text style={styles.qlEmoji}>{item.emoji}</Text>
+                <MaterialIcons
+                  name={item.icon}
+                  size={24}
+                  color={index === 0 ? '#FF4500' : '#555'}
+                />
               </View>
               <Text style={[styles.qlLabel, index === 0 && styles.qlLabelActive]}>{item.label}</Text>
             </TouchableOpacity>
@@ -152,7 +157,7 @@ export function StaticHomeScreen() {
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.iconItem} onPress={() => onPress(item.label)} activeOpacity={0.7}>
               <View style={[styles.iconCircle, { backgroundColor: item.bg }]}>
-                <Text style={styles.iconEmoji}>{item.emoji}</Text>
+                <MaterialIcons name={item.icon} size={28} color="#555" />
               </View>
               <Text style={styles.iconLabel}>{item.label}</Text>
             </TouchableOpacity>
@@ -173,7 +178,7 @@ export function StaticHomeScreen() {
             <TouchableOpacity key={card.id} style={[styles.gridCard, { backgroundColor: card.bg }]}
               onPress={() => onPress(card.title)} activeOpacity={0.8}>
               <View style={styles.gridImageBox}>
-                <Text style={styles.gridEmoji}>{card.emoji}</Text>
+                <MaterialIcons name={card.emoji} size={28} color={card.accent} />
               </View>
               <Text style={[styles.gridTitle, { color: card.accent }]}>{card.title}</Text>
               <Text style={styles.gridSubtitle}>{card.subtitle}</Text>
@@ -189,13 +194,13 @@ export function StaticHomeScreen() {
           <TouchableOpacity key={row.id} style={[styles.listRow, index < FRAUD_ROWS.length - 1 && styles.listRowBorder]}
             onPress={() => onPress(row.title)} activeOpacity={0.7}>
             <View style={[styles.listIcon, { backgroundColor: row.bg }]}>
-              <Text style={styles.listIconEmoji}>{row.emoji}</Text>
+              <MaterialIcons name={row.icon} size={22} color={row.iconColor} />
             </View>
             <View style={styles.listText}>
               <Text style={styles.listTitle}>{row.title}</Text>
               <Text style={styles.listSubtitle}>{row.subtitle}</Text>
             </View>
-            <Text style={styles.listChevron}>›</Text>
+            <MaterialIcons name="chevron-right" size={24} color="#BDBDBD" />
           </TouchableOpacity>
         ))}
       </View>

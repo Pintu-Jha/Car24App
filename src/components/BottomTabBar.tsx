@@ -5,13 +5,14 @@
 
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const TABS = [
-  { id: 'home', label: 'Home', emoji: '🏠' },
-  { id: 'activity', label: 'Activity', emoji: '📋' },
-  { id: 'garage', label: 'My Garage', emoji: '🚙' },
-  { id: 'showrooms', label: 'Showrooms', emoji: '🏪' },
-  { id: 'explore', label: 'Explore', emoji: '🔭' },
+const TABS: { id: string; label: string; icon: string }[] = [
+  { id: 'home', label: 'Home', icon: 'home' },
+  { id: 'activity', label: 'Activity', icon: 'list-alt' },
+  { id: 'garage', label: 'My Garage', icon: 'directions-car' },
+  { id: 'showrooms', label: 'Showrooms', icon: 'store' },
+  { id: 'explore', label: 'Explore', icon: 'explore' },
 ];
 
 interface Props {
@@ -40,9 +41,11 @@ export function BottomTabBar({ activeTab = 'home', onToggleScreen, screenLabel }
               key={tab.id}
               style={styles.tab}
               activeOpacity={0.7}>
-              <Text style={[styles.tabEmoji, isActive && styles.tabEmojiActive]}>
-                {tab.emoji}
-              </Text>
+              <MaterialIcons
+                name={tab.icon}
+                size={24}
+                color={isActive ? '#FF4500' : '#BDBDBD'}
+              />
               <Text style={[styles.tabLabel, isActive && styles.tabLabelActive]}>
                 {tab.label}
               </Text>
@@ -87,18 +90,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     paddingVertical: 4,
-  },
-  tabEmoji: {
-    fontSize: 22,
-    opacity: 0.4,
-    marginBottom: 3,
-  },
-  tabEmojiActive: {
-    opacity: 1,
+    gap: 3,
   },
   tabLabel: {
     fontSize: 10,
-    color: '#999',
+    color: '#BDBDBD',
     fontWeight: '500',
   },
   tabLabelActive: {

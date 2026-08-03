@@ -1,7 +1,6 @@
 // src/components/CategoryQuicklinks.tsx
 // Horizontal scrollable icon+label row. One item is "active" (orange underline).
 // Tapping fires the item's action (compound: update_state + navigate) via ActionBus.
-// Active state is read from ActionBus — zero hardcoded onPress logic.
 
 import React from 'react';
 import {
@@ -11,18 +10,19 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SDUIAction, SDUIDataItem } from '../schema/types';
 import { useActionBus } from '../sdui/ActionBus';
 
-// Map icon name from JSON to emoji/unicode symbol
+// Map icon name from JSON → MaterialIcons glyph name
 const ICON_MAP: Record<string, string> = {
-  grid: '◼',
-  car: '🚗',
-  key: '🔑',
-  'money-bag': '💰',
-  document: '📋',
-  wrench: '🔧',
-  shield: '🛡',
+  grid: 'apps',
+  car: 'directions-car',
+  key: 'vpn-key',
+  'money-bag': 'account-balance-wallet',
+  document: 'description',
+  wrench: 'build',
+  shield: 'security',
 };
 
 interface QuickLinkItemProps {
@@ -39,14 +39,12 @@ interface Props {
 export function CategoryQuicklinks({ data }: Props) {
   const { state, dispatch } = useActionBus();
 
-  // Active ID is either from ActionBus state (after a tap) or the initial prop value
   const activeId = (state['activeTab'] as string | undefined) ?? 'all';
 
   const handlePress = (item: SDUIDataItem) => {
     if (item.action) {
       dispatch(item.action);
     } else {
-      // Default: just update state to the item's id
       dispatch({ type: 'update_state', stateKey: 'activeTab', value: item.id });
     }
   };
@@ -62,6 +60,7 @@ export function CategoryQuicklinks({ data }: Props) {
         renderItem={({ item }) => {
           const itemProps = item.props as unknown as QuickLinkItemProps;
           const isActive = item.id === activeId;
+          const iconName = ICON_MAP[itemProps.icon] ?? 'help-outline';
 
           return (
             <TouchableOpacity
@@ -69,9 +68,11 @@ export function CategoryQuicklinks({ data }: Props) {
               onPress={() => handlePress(item)}
               activeOpacity={0.7}>
               <View style={[styles.iconCircle, isActive && styles.iconCircleActive]}>
-                <Text style={styles.iconText}>
-                  {ICON_MAP[itemProps.icon] ?? '●'}
-                </Text>
+                <MaterialIcons
+                  name={iconName}
+                  size={24}
+                  color={isActive ? '#FF4500' : '#555'}
+                />
               </View>
               <Text style={[styles.label, isActive && styles.labelActive]}>
                 {itemProps.label}
@@ -118,9 +119,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF0EB',
     borderWidth: 2,
     borderColor: '#FF4500',
-  },
-  iconText: {
-    fontSize: 20,
   },
   label: {
     fontSize: 11,

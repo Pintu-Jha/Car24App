@@ -3,6 +3,7 @@
 
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SDUIAction, SDUIDataItem } from '../schema/types';
 import { useActionBus } from '../sdui/ActionBus';
 import { SectionHeader } from './SectionHeader';
@@ -24,13 +25,15 @@ interface Props {
   action?: SDUIAction;
 }
 
-const ICON_EMOJI: Record<string, string> = {
-  report: '📃',
-  odometer: '🔢',
-  rto: '🏛',
+// Map icon name from JSON → MaterialIcons glyph
+const ICON_MAP: Record<string, string> = {
+  report: 'description',
+  odometer: 'speed',
+  rto: 'account-balance',
 };
 
-const ICON_COLORS = ['#FFF3E0', '#E8F5E9', '#E3F2FD'];
+const ICON_COLORS = ['#FF8F00', '#2E7D32', '#1565C0'];
+const ICON_BG = ['#FFF3E0', '#E8F5E9', '#E3F2FD'];
 
 export function ListRows({ header, data }: Props) {
   const { dispatch } = useActionBus();
@@ -41,7 +44,9 @@ export function ListRows({ header, data }: Props) {
       <View style={styles.container}>
         {data?.map((item, index) => {
           const props = item.props as unknown as ListRowProps;
-          const iconBg = ICON_COLORS[index % ICON_COLORS.length];
+          const iconName = ICON_MAP[props.icon] ?? 'article';
+          const iconColor = ICON_COLORS[index % ICON_COLORS.length];
+          const iconBg = ICON_BG[index % ICON_BG.length];
 
           return (
             <TouchableOpacity
@@ -54,9 +59,7 @@ export function ListRows({ header, data }: Props) {
               activeOpacity={0.7}>
               {/* Icon */}
               <View style={[styles.iconBox, { backgroundColor: iconBg }]}>
-                <Text style={styles.iconEmoji}>
-                  {ICON_EMOJI[props.icon] ?? '📄'}
-                </Text>
+                <MaterialIcons name={iconName} size={22} color={iconColor} />
               </View>
 
               {/* Text */}
@@ -68,7 +71,7 @@ export function ListRows({ header, data }: Props) {
               </View>
 
               {/* Chevron */}
-              <Text style={styles.chevron}>›</Text>
+              <MaterialIcons name="chevron-right" size={24} color="#BDBDBD" />
             </TouchableOpacity>
           );
         })}
@@ -104,9 +107,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexShrink: 0,
   },
-  iconEmoji: {
-    fontSize: 22,
-  },
   textBlock: {
     flex: 1,
   },
@@ -120,11 +120,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#777',
     lineHeight: 17,
-  },
-  chevron: {
-    fontSize: 22,
-    color: '#BDBDBD',
-    fontWeight: '300',
-    marginLeft: 4,
   },
 });

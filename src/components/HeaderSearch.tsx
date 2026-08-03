@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SDUIDataItem, SDUIAction } from '../schema/types';
 
 interface Props {
@@ -50,9 +51,9 @@ export function HeaderSearch({ city, avatarInitials, searchPlaceholders }: Props
       {/* Location row */}
       <View style={styles.locationRow}>
         <View style={styles.locationLeft}>
-          <Text style={styles.locationPin}>📍</Text>
+          <MaterialIcons name="location-on" size={18} color="#FF4500" />
           <Text style={styles.cityText}>{city}</Text>
-          <Text style={styles.chevron}>▾</Text>
+          <MaterialIcons name="keyboard-arrow-down" size={18} color="#666" />
         </View>
         <TouchableOpacity style={styles.avatar} activeOpacity={0.8}>
           <Text style={styles.avatarText}>{avatarInitials}</Text>
@@ -61,7 +62,7 @@ export function HeaderSearch({ city, avatarInitials, searchPlaceholders }: Props
 
       {/* Search bar */}
       <View style={styles.searchBar}>
-        <Text style={styles.searchIcon}>🔍</Text>
+        <MaterialIcons name="search" size={20} color="#9E9E9E" style={styles.searchIconStyle} />
         <Animated.Text style={[styles.searchPlaceholder, { opacity: fadeAnim }]}>
           {placeholder}
         </Animated.Text>
@@ -93,20 +94,12 @@ const styles = StyleSheet.create({
   locationLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-  },
-  locationPin: {
-    fontSize: 14,
+    gap: 2,
   },
   cityText: {
     fontSize: 16,
     fontWeight: '700',
     color: '#1A1A2E',
-    marginLeft: 2,
-  },
-  chevron: {
-    fontSize: 14,
-    color: '#666',
     marginLeft: 2,
   },
   avatar: {
@@ -132,8 +125,7 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
     position: 'relative',
   },
-  searchIcon: {
-    fontSize: 16,
+  searchIconStyle: {
     marginRight: 10,
   },
   searchPlaceholder: {
