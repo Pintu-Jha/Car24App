@@ -44,12 +44,11 @@ export function BottomTabBar({ activeTab = 'home', onToggleScreen, screenLabel }
               <MaterialIcons
                 name={tab.icon}
                 size={24}
-                color={isActive ? '#FF4500' : '#BDBDBD'}
+                color={isActive ? '#282CBA' : '#BDBDBD'}
               />
               <Text style={[styles.tabLabel, isActive && styles.tabLabelActive]}>
                 {tab.label}
               </Text>
-              {isActive && <View style={styles.activeDot} />}
             </TouchableOpacity>
           );
         })}
@@ -98,15 +97,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   tabLabelActive: {
-    color: '#FF4500',
+    color: '#282CBA',
     fontWeight: '700',
-  },
-  activeDot: {
-    position: 'absolute',
-    top: 0,
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: '#FF4500',
   },
 });
