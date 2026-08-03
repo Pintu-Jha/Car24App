@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { SDUIHomeScreen } from './SDUIHomeScreen';
 import { StaticHomeScreen } from './StaticHomeScreen';
 import { colors } from '../theme';
+import { useActionBus } from '../sdui/ActionBus';
 
 type ScreenState = 'sdui' | 'static' | 'sdui_unknown';
 
 export function RootHomeScreen() {
-  const [screen, setScreen] = useState<ScreenState>('sdui');
+  const { state, dispatch } = useActionBus();
+  const screen = (state['homeScreenMode'] as ScreenState) || 'sdui';
 
   const toggleScreen = () => {
-    if (screen === 'sdui') setScreen('static');
-    else if (screen === 'static') setScreen('sdui_unknown');
-    else setScreen('sdui');
+    let next: ScreenState = 'sdui';
+    if (screen === 'sdui') next = 'static';
+    else if (screen === 'static') next = 'sdui_unknown';
+    
+    dispatch({ type: 'update_state', stateKey: 'homeScreenMode', value: next });
   };
 
   const getToggleText = () => {
