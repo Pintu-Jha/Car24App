@@ -1,0 +1,151 @@
+// src/components/HeaderSearch.tsx
+// Sticky header — location pin + city, rotating search placeholder, avatar initials.
+// Props from JSON: city, avatarInitials, searchPlaceholders
+
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  Animated,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { SDUIDataItem, SDUIAction } from '../schema/types';
+
+interface Props {
+  city: string;
+  avatarInitials: string;
+  searchPlaceholders: string[];
+  data?: SDUIDataItem[];
+  action?: SDUIAction;
+}
+
+export function HeaderSearch({ city, avatarInitials, searchPlaceholders }: Props) {
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (!searchPlaceholders || searchPlaceholders.length === 0) return;
+
+    const rotate = () => {
+      Animated.sequence([
+        Animated.timing(fadeAnim, { toValue: 0, duration: 300, useNativeDriver: true }),
+        Animated.timing(fadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }),
+      ]).start();
+      setPlaceholderIndex(i => (i + 1) % searchPlaceholders.length);
+    };
+
+    const interval = setInterval(rotate, 2500);
+    return () => clearInterval(interval);
+  }, [fadeAnim, searchPlaceholders]);
+
+  const placeholder =
+    searchPlaceholders && searchPlaceholders.length > 0
+      ? searchPlaceholders[placeholderIndex]
+      : 'Search cars';
+
+  return (
+    <View style={styles.container}>
+      {/* Location row */}
+      <View style={styles.locationRow}>
+        <View style={styles.locationLeft}>
+          <Text style={styles.locationPin}>📍</Text>
+          <Text style={styles.cityText}>{city}</Text>
+          <Text style={styles.chevron}>▾</Text>
+        </View>
+        <TouchableOpacity style={styles.avatar} activeOpacity={0.8}>
+          <Text style={styles.avatarText}>{avatarInitials}</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Search bar */}
+      <View style={styles.searchBar}>
+        <Text style={styles.searchIcon}>🔍</Text>
+        <Animated.Text style={[styles.searchPlaceholder, { opacity: fadeAnim }]}>
+          {placeholder}
+        </Animated.Text>
+        <TextInput style={styles.searchInput} />
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#FFFFFF',
+    paddingTop: 12,
+    paddingBottom: 14,
+    paddingHorizontal: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 4,
+    zIndex: 10,
+  },
+  locationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  locationLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  locationPin: {
+    fontSize: 14,
+  },
+  cityText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1A1A2E',
+    marginLeft: 2,
+  },
+  chevron: {
+    fontSize: 14,
+    color: '#666',
+    marginLeft: 2,
+  },
+  avatar: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#FF4500',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 14,
+    letterSpacing: 0.5,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 11,
+    position: 'relative',
+  },
+  searchIcon: {
+    fontSize: 16,
+    marginRight: 10,
+  },
+  searchPlaceholder: {
+    fontSize: 14,
+    color: '#9E9E9E',
+    position: 'absolute',
+    left: 46,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    color: '#1A1A2E',
+    padding: 0,
+  },
+});
