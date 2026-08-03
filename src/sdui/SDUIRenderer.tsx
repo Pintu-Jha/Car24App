@@ -3,12 +3,23 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SDUIPage, SDUISection } from '../schema/types';
 import { useActionBus } from './ActionBus';
 import { componentRegistry } from './registry';
 import { UnknownFallback } from './UnknownFallback';
 
 const Tab = createMaterialTopTabNavigator();
+
+const QUICKLINK_ICON_MAP: Record<string, string> = {
+  'grid': 'apps',
+  'car': 'directions-car',
+  'key': 'vpn-key',
+  'money-bag': 'account-balance-wallet',
+  'document': 'description',
+  'wrench': 'build',
+  'shield': 'security',
+};
 
 interface Props {
   page: SDUIPage;
@@ -58,7 +69,7 @@ export function SDUIRenderer({ page }: Props) {
                   tabBarIcon: ({ focused }) => (
                     <View style={[styles.qlCircle, focused && styles.qlCircleActive]}>
                       <MaterialIcons
-                        name={quicklink.props.icon as string}
+                        name={QUICKLINK_ICON_MAP[quicklink.props.icon as string] || 'help-outline'}
                         size={22}
                         color={focused ? '#282CBA' : '#FFFFFF'}
                       />

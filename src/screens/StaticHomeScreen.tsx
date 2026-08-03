@@ -8,6 +8,7 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList } from '
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { markEnd, markStart, printReport } from '../perf/markers';
 import { Alert } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // ── Static data (mirrors sample-home.json exactly) ────────────────────────────
 
@@ -191,6 +192,7 @@ function TabContent({ tabId }: { tabId: string }) {
 
 export function StaticHomeScreen() {
   const hasReported = useRef(false);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     markStart('static_total');
@@ -209,7 +211,7 @@ export function StaticHomeScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: '#F7F7F7' }}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: Math.max(insets.top, 12) }]}>
         <View style={styles.locationRow}>
           <View style={styles.locationLeft}>
             <MaterialIcons name="location-on" size={18} color="#FFFFFF" />

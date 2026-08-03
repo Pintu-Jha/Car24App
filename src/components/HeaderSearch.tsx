@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SDUIDataItem, SDUIAction } from '../schema/types';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface Props {
   city: string;
@@ -26,6 +27,7 @@ export function HeaderSearch({ city, avatarInitials, searchPlaceholders }: Props
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [searchValue, setSearchValue] = useState('');
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     if (!searchPlaceholders || searchPlaceholders.length === 0) return;
@@ -48,7 +50,7 @@ export function HeaderSearch({ city, avatarInitials, searchPlaceholders }: Props
       : 'Search cars';
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: Math.max(insets.top, 12) }]}>
       {/* Location row */}
       <View style={styles.locationRow}>
         <View style={styles.locationLeft}>
@@ -83,7 +85,6 @@ export function HeaderSearch({ city, avatarInitials, searchPlaceholders }: Props
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#282CBA',
-    paddingTop: 12,
     paddingBottom: 4,
     paddingHorizontal: 16,
     zIndex: 10,
