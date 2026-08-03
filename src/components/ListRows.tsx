@@ -40,7 +40,7 @@ export function ListRows({ header, data }: Props) {
       {header && <SectionHeader title={header.title} badge={header.badge} />}
       <View style={styles.container}>
         {data?.map((item, index) => {
-          const props = item.props as ListRowProps;
+          const props = item.props as unknown as ListRowProps;
           const iconBg = ICON_COLORS[index % ICON_COLORS.length];
 
           return (

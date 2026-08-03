@@ -98,7 +98,7 @@ export function CardRail({ header, cardStyle = 'dark', data }: Props) {
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}
         renderItem={({ item }) => {
-          const props = item.props as RailCardProps;
+          const props = item.props as unknown as RailCardProps;
           return (
             <TouchableOpacity
               style={[styles.card, { backgroundColor: theme.bg }]}

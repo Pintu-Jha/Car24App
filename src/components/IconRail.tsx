@@ -52,7 +52,7 @@ export function IconRail({ header, data }: Props) {
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}
         renderItem={({ item, index }) => {
-          const props = item.props as IconItemProps;
+          const props = item.props as unknown as IconItemProps;
           const circleBg = CIRCLE_COLORS[index % CIRCLE_COLORS.length];
 
           return (

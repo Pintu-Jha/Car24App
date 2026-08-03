@@ -60,7 +60,7 @@ export function CategoryQuicklinks({ data }: Props) {
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}
         renderItem={({ item }) => {
-          const itemProps = item.props as QuickLinkItemProps;
+          const itemProps = item.props as unknown as QuickLinkItemProps;
           const isActive = item.id === activeId;
 
           return (

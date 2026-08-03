@@ -52,7 +52,7 @@ export function CardGrid({ header, data }: Props) {
         {rows.map((row, rowIdx) => (
           <View key={rowIdx} style={styles.row}>
             {row.map((item, colIdx) => {
-              const props = item.props as GridCardProps;
+              const props = item.props as unknown as GridCardProps;
               const bg = CARD_COLORS[colIdx % CARD_COLORS.length];
               const accent = ACCENT_COLORS[colIdx % ACCENT_COLORS.length];
               return (
