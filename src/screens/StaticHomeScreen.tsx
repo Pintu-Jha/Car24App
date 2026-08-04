@@ -74,31 +74,47 @@ function StaticSectionHeader({ title, badge }: { title: string; badge?: string }
   );
 }
 
-function CardImageInline({ uri }: { uri: string }) {
+// Overlay colors matching SDUI CardRail themes
+const OVERLAY_COLORS: Record<string, string> = {
+  [colors.background.darkRail]: 'rgba(13,27,42,0.60)',
+  [colors.background.greenRail]: 'rgba(20,83,45,0.60)',
+  [colors.background.creamRail]: 'rgba(255,248,240,0.6)',
+};
+
+function CardImageBg({ uri, fallbackColor }: { uri: string; fallbackColor: string }) {
   const [error, setError] = React.useState(false);
   if (!error) {
     return (
       <Image
         source={{ uri }}
-        style={styles.railCardImage}
-        resizeMode="contain"
+        style={styles.railCardBgImage}
+        resizeMode="cover"
         onError={() => setError(true)}
       />
     );
   }
   return (
-    <View style={styles.railCardImageFallback}>
-      <MaterialIcons name="directions-car" size={40} color="rgba(255,255,255,0.5)" />
+    <View style={styles.railCardFallback}>
+      <MaterialIcons name="directions-car" size={64} color={fallbackColor} />
     </View>
   );
 }
 
 function StaticCard({ title, image, bg, textColor = '#FFF' }: { title: string; image: string; bg: string; textColor?: string }) {
+  const overlay = OVERLAY_COLORS[bg] ?? 'rgba(0,0,0,0.5)';
+  const fallbackIcon = bg === colors.background.creamRail ? 'rgba(160,132,92,0.2)' : 'rgba(255,255,255,0.15)';
+  const borderStyle = bg === colors.background.creamRail ? { borderWidth: 1, borderColor: '#F0D9A8' } : undefined;
   return (
-    <TouchableOpacity style={[styles.railCard, { backgroundColor: bg }]} onPress={() => onPress(title)} activeOpacity={0.85}>
-      <Text style={[styles.railCardTitle, { color: textColor }]} numberOfLines={2}>{title}</Text>
-      <View style={styles.railCardImageBox}>
-        <CardImageInline uri={image} />
+    <TouchableOpacity style={[styles.railCard, { backgroundColor: bg }, borderStyle]} onPress={() => onPress(title)} activeOpacity={0.85}>
+      {/* Image fills entire card */}
+      <View style={styles.railCardImageLayer}>
+        <CardImageBg uri={image} fallbackColor={fallbackIcon} />
+      </View>
+      {/* Colored overlay */}
+      <View style={[styles.railCardOverlay, { backgroundColor: overlay }]} />
+      {/* Title text */}
+      <View style={styles.railCardTextLayer}>
+        <Text style={[styles.railCardTitle, { color: textColor }]} numberOfLines={2}>{title}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -317,13 +333,15 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 18, fontWeight: '700', color: colors.text.primary, letterSpacing: -0.3 },
   badge: { backgroundColor: colors.brand.accent, borderRadius: radius.pill, paddingHorizontal: spacing.sm + 2, paddingVertical: 3 },
   badgeText: { color: colors.text.white, fontSize: 11, fontWeight: '700' },
-  // Rail cards — title top-left, image bottom-right
+  // Rail cards — image bg + colored overlay + title on top
   railList: { paddingHorizontal: spacing.lg, paddingBottom: spacing.lg, gap: spacing.md },
-  railCard: { width: 140, height: 150, borderRadius: radius.md, overflow: 'hidden', padding: spacing.md, position: 'relative' },
-  railCardTitle: { fontSize: 14, fontWeight: '700', lineHeight: 20, zIndex: 1, maxWidth: '70%' },
-  railCardImageBox: { position: 'absolute', bottom: 0, right: 0, width: 90, height: 90, alignItems: 'flex-end', justifyContent: 'flex-end' },
-  railCardImage: { width: '100%', height: '100%' },
-  railCardImageFallback: { width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' },
+  railCard: { width: 150, height: 155, borderRadius: radius.lg, overflow: 'hidden', position: 'relative', shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.18, shadowRadius: 8, elevation: 6 },
+  railCardImageLayer: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
+  railCardBgImage: { width: '100%', height: '100%' },
+  railCardFallback: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 16 },
+  railCardOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
+  railCardTextLayer: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, padding: spacing.md + 2, justifyContent: 'flex-start' },
+  railCardTitle: { fontSize: 15, fontWeight: '800', lineHeight: 21, letterSpacing: 0.1, textShadowColor: 'rgba(0,0,0,0.25)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 2 },
   // Icon rail — rectangular image cards
   iconSection: { backgroundColor: colors.background.card, marginBottom: spacing.sm, paddingBottom: spacing.lg },
   iconList: { paddingHorizontal: spacing.lg, gap: spacing.lg },
