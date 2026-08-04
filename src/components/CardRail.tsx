@@ -14,7 +14,7 @@ import {
 import { SDUIAction, SDUIDataItem } from '@/schema/types';
 import { useActionBus } from '@/sdui/ActionBus';
 import { SectionHeader } from '@/components/SectionHeader';
-import { EmojiPlaceholder } from '@/components/common/EmojiPlaceholder';
+import { DynamicImage } from '@/components/common/DynamicImage';
 import { colors } from '@/theme';
 
 type CardStyle = 'dark' | 'accent' | 'cream';
@@ -84,7 +84,7 @@ export function CardRail({ header, cardStyle = 'dark', data }: Props) {
               style={[styles.card, { backgroundColor: theme.bg }]}
               onPress={() => item.action && dispatch(item.action)}
               activeOpacity={0.85}>
-              <EmojiPlaceholder 
+              <DynamicImage 
                 name={props.image} 
                 backgroundColor={theme.imageBg} 
                 borderColor={theme.imageBorder} 

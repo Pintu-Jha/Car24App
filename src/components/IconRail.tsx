@@ -13,7 +13,7 @@ import {
 import { SDUIAction, SDUIDataItem } from '@/schema/types';
 import { useActionBus } from '@/sdui/ActionBus';
 import { SectionHeader } from '@/components/SectionHeader';
-import { EmojiPlaceholder } from '@/components/common/EmojiPlaceholder';
+import { DynamicImage } from '@/components/common/DynamicImage';
 import { colors } from '@/theme';
 
 interface Header {
@@ -55,7 +55,7 @@ export function IconRail({ header, data }: Props) {
               style={styles.item}
               onPress={() => item.action && dispatch(item.action)}
               activeOpacity={0.7}>
-              <EmojiPlaceholder
+              <DynamicImage
                 name={props.image}
                 backgroundColor={circleBg}
                 size={28}
