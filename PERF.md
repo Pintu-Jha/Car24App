@@ -1,67 +1,121 @@
-# Performance Profiling — SDUI Engine vs. Hardcoded Static Twin
+# PERF.md — SDUI vs Static Screen, Cold-Start Comparison
 
-A slow Server-Driven UI implementation defeats its operational advantages. To rigorously quantify the exact computational overhead introduced by dynamic JSON parsing, registry component matching, conditional evaluation, and action bus binding, we built a mathematically identical, hardcoded native control screen (`StaticHomeScreen.tsx`) and benchmarked both under identical conditions.
+## Method
 
----
+- **Device:** physical Android device, connected via Wi-Fi ADB (`adb-RZ8N912HTEM`)
+- **Build:** release build, package `com.car24app`
+- **Tool:** in-app timing markers (`src/perf/markers.ts`, `Date.now()`-based) logged via
+  `console.log`, captured with `adb logcat -s ReactNativeJS:V`
+- **Test loop:** `adb shell am force-stop com.car24app` → `adb shell am start -n
+  com.car24app/.MainActivity` → read the printed report → repeat
+- **Runs:** 5 cold starts for SDUI, 6 for static (first static run discarded — see note)
+- Reported number = **median**, not mean, to reduce sensitivity to one-off outliers
 
-## 1. Measurement Methodology & Instrumentation
-We engineered an isolated instrumentation module (`src/perf/markers.ts`) utilizing high-precision native timers (`Date.now()`) explicitly bound to React component lifecycle phases (`useEffect` mount and layout completion timing).
-
-### Experimental Environment
-- **Target Platforms:** Physical Android Emulator (API 34, Android 14) & iOS 17 Simulator (iPhone 15 Pro).
-- **Runtime Configuration:** React Native CLI build powered by the **Hermes JS Engine** (Bytecode Precompilation & Generational Garbage Collection enabled).
-- **Network Similitude:** Both static and SDUI variations load external high-resolution photography via HTTPS (Unsplash CDNs) with native disk caching to ensure parity in image decompression overhead.
-
----
-
-## 2. Benchmark Metrics & Overhead Analysis
-
-All timing numbers below represent cold-start averages across 20 sequential mount iterations on Release-equivalent optimization settings:
-
-| Performance Metric | Static (Hardcoded) | SDUI (Dynamic JSON) | Net Overhead | Overhead % | Assessment |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **TTR (Time to Render - Above Fold)** | 45 ms | 58 ms | +13 ms | **+28.8%** | Excellent |
-| **TTI (Time to Interactive - First Tap)**| 52 ms | 67 ms | +15 ms | **+28.8%** | Excellent |
-| **Full Page Time (All Sections Mounted)**| 64 ms | 84 ms | +20 ms | **+31.2%** | Acceptable |
-| **Scroll Smoothness (Framerate)** | 60.0 FPS | 60.0 FPS | 0 FPS | **0% (Identical)**| Flawless |
-
-### Detailed SDUI Execution Breakdown
-When isolating the **84ms** total SDUI execution pipeline, the JavaScript CPU thread splits its work as follows:
-1. **JSON Payload Fetch & Parse Phase:** **6 ms** (7.1% of budget)
-   - Reading JSON structure, instantiating JS object trees, and checking `schemaVersion` & `minClientVersion` validation checks.
-2. **View-Build & Component Registry Mapping Phase:** **78 ms** (92.9% of budget)
-   - Recursive rendering evaluation, resolving registry mapping strings (`card_rail`, `icon_rail`, etc.) to actual functions, binding `ActionBus` listeners, and initializing layout frames.
+No emulator or simulator was used. Numbers reflect this specific physical device only;
+absolute values will differ on other hardware, but the relative SDUI-vs-static comparison
+is the meaningful result.
 
 ---
 
-## 3. The Measure → Optimize Loop (Engineering Evidence)
+## SDUI screen — cold start (2 batches, 5 runs each)
 
-We did not accept our initial numbers at face value. Upon building our original alpha prototype, TTR overhead originally sat at over **+55%** (~99ms). Through systemic profiling, we executed the following iterative optimization loop:
+**Batch 1**
 
-### 1. Removing Prop Drilling Bloat via ActionBus Context (Successful Optimization)
-- **Problem Discovered:** Initially, action callback handlers (`onAction={handlePress}`) and global screen state were drilled down through 4 layers of components (`SDUIRenderer` → `SDUITabRenderer` → `CardRail` → `CardItem`). When a quick-link tab was pressed to filter content, the entire component tree experienced cascading re-renders.
-- **Solution:** We extracted event handling into a centralized React Context (`ActionBusProvider`). Individual leaf nodes invoke `useActionBus().dispatch` directly. 
-- **Result:** Cut view-reconciliation latency during tab interactions by **40%** and reduced initial memory footprint by eliminating intermediate closure binding.
+| Run | json_parse | view_build | sdui_total |
+|---|---|---|---|
+| 1 | 13ms | 186ms | 199ms |
+| 2 | 15ms | 166ms | 181ms |
+| 3 | 7ms | 173ms | 180ms |
+| 4 | 5ms | 179ms | 184ms |
+| 5 | 6ms | 187ms | 193ms |
+| **Median** | **7ms** | **179ms** | **184ms** |
 
-### 2. Eliminating Inline Lambda Injections (Successful Optimization)
-- **Problem Discovered:** Inside horizontal `FlatList` elements, items defined inline anonymous functions inside renderers: `onPress={() => dispatch({ type: 'navigate', ... })}`. This caused React's virtual DOM reconciliation to treat every list item as a new component identity on state changes, bypassing shallow equality checks.
-- **Solution:** Structured action mapping cleanly inside extracted presentation components (`CardRail`, `IconRail`), maintaining stable references across view mounts.
-- **Result:** Removed noticeable micro-stutters during rapid tab alternation.
+**Batch 2** (re-run for consistency check)
 
-### 3. Aggressive Section Memoization via `React.memo` (Explored & Re-evaluated)
-- **Hypothesis:** Wrapping every dynamic component in `React.memo` with custom deep-comparison equality checks (`JSON.stringify(prevProps.section) === JSON.stringify(nextProps.section)`) would drastically accelerate rendering.
-- **Experimental Finding:** While `React.memo` works brilliantly at the top-level Section layer (`MemoizedSection`), attempting to memoize *individual card items* within small data rails (< 5 items per row) actually **degraded cold-start TTR by ~8ms**. The computational expense of comparing stringified JSON props during initial assembly outweighed React's baseline virtual DOM diffing speed on Hermes.
-- **Final Decision:** We pruned redundant child memoization and exclusively restricted `React.memo` to top-level section container blocks.
+| Run | json_parse | view_build | sdui_total |
+|---|---|---|---|
+| 1 | 4ms | 215ms | 219ms |
+| 2 | 12ms | 202ms | 214ms |
+| 3 | 3ms | 202ms | 205ms |
+| 4 | 4ms | 201ms | 205ms |
+| 5 | 4ms | 211ms | 215ms |
+| **Median** | **4ms** | **202ms** | **214ms** |
+
+Batch-to-batch median moved from 184ms → 214ms — a ~16% run-to-run swing on the same
+device and build. This is normal device-level variance (background processes, thermal
+state, etc.), not a code regression — flagged here rather than smoothed over, since
+reporting only the favorable batch would misrepresent the noise floor.
 
 ---
 
-## 4. Why 60 FPS Scroll Performance is Identical (Zero Jank)
-While SDUI imposes a tiny one-time initialization penalty (~20ms) on the JavaScript thread to evaluate JSON schemas, **it imposes ZERO runtime penalty during user scrolling or swiping**.
+## Static screen — cold start
 
-Why? Because our component registry maps server JSON directly into compiled, native OS view structures (`<ScrollView>`, `<View>`, `<Text>`, native Image compositors). Once mounted, the React Native UI thread (running on the native GPU/CPU loop) handles layout interpolation and scroll momentum natively. An SDUI card rail and a hardcoded static card rail exist as literally identical view nodes in the mobile operating system's native hierarchy.
+| Run | view_build | static_total |
+|---|---|---|
+| 1 | 394ms | 394ms |
+| 2 | 237ms | 237ms |
+| 3 | 217ms | 217ms |
+| 4 | 214ms | 214ms |
+| 5 | 230ms | 230ms |
+| 6 | 220ms | 220ms |
+| **Median (runs 2–6)** | **220ms** | **220ms** |
+
+Run 1 (394ms) excluded from the median — it was the very first launch after a fresh
+install, and is consistent with a one-time JIT/cache warm-up cost rather than steady-state
+behavior. Included in the raw table above for transparency rather than silently dropped.
 
 ---
 
-## 5. Architectural Honest Verdict
-- **Is there an overhead?** Yes. An average cold-start initialization penalty of **+15ms to +20ms** on modern mobile hardware.
-- **Is the trade-off worth it?** Absolutely. A 20ms delta is completely imperceptible to human reaction timing (human visual persistence thresholds sit at ~100ms), whereas the ability to continuously update UI layouts, launch campaigns, and adjust conversion tunnels without waiting 7 days for App Store submission loops unlocks immense enterprise velocity.
+## Head-to-head
+
+| Metric | SDUI (median) | Static (median) | Delta |
+|---|---|---|---|
+| Total cold-start render | 184–214ms (batch range) | 220ms | SDUI is comparable to, and in some runs faster than, static |
+
+**Honest read:** across two SDUI batches (184ms, 214ms) against static's 220ms, SDUI shows
+no consistent, meaningful overhead on this device for this screen. The batch-to-batch
+device noise (~30ms) is larger than the SDUI-vs-static gap itself, so claiming a precise
+overhead percentage here would overstate the precision of this measurement setup.
+
+### SDUI internal breakdown
+`json_parse` accounts for under 4% of SDUI's total time in both batches (4–7ms out of
+184–219ms) — nearly all cost sits in `view_build` (component instantiation, registry
+lookups, action binding), same as static's rendering cost. This means the registry lookup
++ JSON traversal overhead specific to SDUI is small relative to React Native's baseline
+component-mount cost, which both screens pay regardless of SDUI or static.
+
+---
+
+## Scroll performance
+
+*(Fill in after running the scroll-jank test: `adb shell screenrecord` while scrolling
+each screen full-length, then play back at reduced speed and note any visible stutter.
+Report qualitatively — "no visible jank on either screen" is a valid, sufficient finding
+if that's what's observed; do not claim a numeric dropped-frame count unless it was
+actually measured with a frame-counting tool.)*
+
+---
+
+## What we did NOT do (explicit scope honesty)
+
+- Did not run on iOS — no signed release build / paid Apple dev account available for this
+  assignment; Android-only testing, noted here rather than implied otherwise
+- Did not test under network latency variance — JSON is loaded from a local bundled file,
+  not fetched over HTTP, so `json_parse` reflects local file parse only, not network fetch
+- Did not run a large-N (20+) sample; 5–6 cold starts per screen, medians reported —
+  sufficient to see the SDUI/static gap is within noise, not sufficient to claim
+  sub-millisecond precision
+- Did not attempt targeted optimization passes, since the baseline numbers didn't show a
+  meaningful SDUI penalty to optimize away — noted honestly rather than inventing an
+  optimization narrative to fill out this section
+
+---
+
+## Verdict
+
+For this screen, on this device, SDUI's cold-start cost is not meaningfully different from
+a fully hardcoded equivalent. The dominant cost in both cases is React Native's own
+component-mount work, not JSON parsing or registry resolution. This is a reasonable result
+given the screen's data volume (a handful of sections, small JSON payload) — it should not
+be read as a general claim that SDUI has zero overhead at larger scale (e.g. hundreds of
+sections, deeply nested conditional trees), which this test did not exercise.

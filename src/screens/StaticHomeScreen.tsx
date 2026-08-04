@@ -247,19 +247,19 @@ export function StaticHomeScreen() {
   const hasReported = useRef(false);
   const insets = useSafeAreaInsets();
 
-  useEffect(() => {
+  if (!hasReported.current) {
     markStart('static_total');
-    markStart('static_view_build');
-  }, []);
+    markStart('view_build');
+  }
 
   useEffect(() => {
     if (!hasReported.current) {
-      markEnd('static_view_build');
+      markEnd('view_build');
       markEnd('static_total');
-      printReport();
+      printReport('Static Perf Report');
       hasReported.current = true;
     }
-  });
+  }, []);
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background.main }}>

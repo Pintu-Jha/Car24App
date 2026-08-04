@@ -45,8 +45,8 @@ const ActionBusContext = createContext<ActionBusContextValue>({
 
 // ── Provider ──────────────────────────────────────────────────────────────────
 
-export function ActionBusProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatchInternal] = useReducer(reducer, {});
+export function ActionBusProvider({ children, initialState = {} }: { children: React.ReactNode; initialState?: SDUIState }) {
+  const [state, dispatchInternal] = useReducer(reducer, initialState);
 
   const dispatch = useCallback((action: SDUIAction) => {
     switch (action.type) {

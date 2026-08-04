@@ -47,10 +47,13 @@ function AppContent() {
   return <RootNavigator />;
 }
 
-function App() {
+function App(props?: { screen?: string }) {
+  const initialMode = (props?.screen === 'sdui' || props?.screen === 'sdui_unknown') ? props.screen : 'static';
+  const initialState = { homeScreenMode: initialMode };
+
   return (
     <SafeAreaProvider>
-      <ActionBusProvider>
+      <ActionBusProvider initialState={initialState}>
         <AppContent />
       </ActionBusProvider>
     </SafeAreaProvider>

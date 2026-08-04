@@ -26,9 +26,9 @@ export function getDuration(label: string): number | undefined {
   return durations[label];
 }
 
-export function printReport(): void {
+export function printReport(title = 'SDUI Perf Report'): void {
   console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log('  SDUI Perf Report');
+  console.log(`  ${title}`);
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   Object.entries(durations).forEach(([label, ms]) => {
     console.log(`  ${label.padEnd(20)} ${ms}ms`);

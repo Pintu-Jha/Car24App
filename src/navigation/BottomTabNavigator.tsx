@@ -36,7 +36,7 @@ export function BottomTabNavigator() {
         },
         tabBarIcon: ({ color, size }) => {
           let iconName = 'help-outline';
-          
+
           if (route.name === 'Home') iconName = 'home';
           else if (route.name === 'Activity') iconName = 'receipt-long';
           else if (route.name === 'Garage') iconName = 'directions-car';

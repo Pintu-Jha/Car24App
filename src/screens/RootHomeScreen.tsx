@@ -15,7 +15,7 @@ export function RootHomeScreen() {
     let next: ScreenState = 'sdui';
     if (screen === 'sdui') next = 'static';
     else if (screen === 'static') next = 'sdui_unknown';
-    
+
     dispatch({ type: 'update_state', stateKey: 'homeScreenMode', value: next });
   };
 
@@ -32,10 +32,10 @@ export function RootHomeScreen() {
         {screen === 'static' && <StaticHomeScreen />}
         {screen === 'sdui_unknown' && <SDUIHomeScreen useUnknownPayload={true} />}
       </View>
-      
+
       {/* Dev Toggle at the bottom of the home content */}
-      <TouchableOpacity 
-        style={styles.devToggle} 
+      <TouchableOpacity
+        style={styles.devToggle}
         onPress={toggleScreen}
         activeOpacity={0.9}
       >
