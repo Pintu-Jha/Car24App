@@ -231,8 +231,12 @@
             "image": "https://images.unsplash.com/photo-1580519542036-ed47f3e42f9d?auto=format&fit=crop&w=400&q=80"
           },
           "action": {
-            "type": "navigate",
-            "screen": "Valuation"
+            "type": "open_sheet",
+            "sheetId": "car_valuation_sheet",
+            "payload": {
+              "title": "Check Car Valuation",
+              "subtitle": "Get an instant, data-driven estimated resale value for your car in 1 minute."
+            }
           }
         },
         {
@@ -306,8 +310,12 @@
             "image": "https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=400&q=80"
           },
           "action": {
-            "type": "navigate",
-            "screen": "CreditScore"
+            "type": "open_sheet",
+            "sheetId": "credit_score_sheet",
+            "payload": {
+              "title": "Free Credit Score Check",
+              "subtitle": "Check your credit score instantly with zero impact on your credit rating."
+            }
           }
         }
       ]

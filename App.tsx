@@ -31,20 +31,30 @@ function EmptyScreen({ routeName, onBack }: { routeName: string, onBack: () => v
   );
 }
 
+import { GlobalBottomSheet } from '@/components/common/GlobalBottomSheet';
+
 function AppContent() {
   const { state, dispatch } = useActionBus();
   const currentRoute = state['currentRoute'] as string | undefined;
 
   if (currentRoute) {
     return (
-      <EmptyScreen 
-        routeName={currentRoute} 
-        onBack={() => dispatch({ type: 'update_state', stateKey: 'currentRoute', value: undefined })} 
-      />
+      <>
+        <EmptyScreen 
+          routeName={currentRoute} 
+          onBack={() => dispatch({ type: 'update_state', stateKey: 'currentRoute', value: undefined })} 
+        />
+        <GlobalBottomSheet />
+      </>
     );
   }
 
-  return <RootNavigator />;
+  return (
+    <>
+      <RootNavigator />
+      <GlobalBottomSheet />
+    </>
+  );
 }
 
 function App(props?: { screen?: string }) {

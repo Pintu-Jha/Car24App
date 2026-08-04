@@ -66,6 +66,11 @@ export function ActionBusProvider({ children, initialState = {} }: { children: R
 
       case 'open_sheet':
         console.log('[SDUI] open_sheet →', action.sheetId, action.payload ?? '');
+        dispatchInternal({
+          type: 'UPDATE_STATE',
+          key: 'activeSheet',
+          value: { sheetId: action.sheetId, payload: action.payload }
+        });
         break;
 
       case 'api_call':
