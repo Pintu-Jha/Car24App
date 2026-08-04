@@ -1,17 +1,22 @@
+// src/components/common/DynamicImage.tsx
+// Reusable image component: renders URL images with icon fallback.
+// Used across CardGrid, ListRows, and any component needing dynamic images.
+
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 interface Props {
-  name: string;
+  name: string;        // URL string or semantic key
   backgroundColor?: string;
   borderColor?: string;
-  size?: number;
+  size?: number;       // icon size for fallback
+  width?: number;      // explicit width (optional)
   height?: number;
   borderRadius?: number;
 }
 
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
+// Semantic key → MaterialIcon name (fallback when not a URL)
 const ICON_MAP: Record<string, string> = {
   car_suv: 'directions-car',
   car_hatch: 'directions-car',
@@ -29,18 +34,41 @@ const ICON_MAP: Record<string, string> = {
   credit: 'trending-up',
   pdi2: 'find-in-page',
   check2: 'check-circle',
+  report: 'description',
+  odometer: 'speed',
+  rto: 'account-balance',
 };
 
-export function DynamicImage({ name, backgroundColor = '#eee', borderColor, size = 44, height = 100, borderRadius = 0 }: Props) {
+export function DynamicImage({
+  name,
+  backgroundColor = '#eee',
+  borderColor,
+  size = 44,
+  width,
+  height = 100,
+  borderRadius = 0,
+}: Props) {
   const [error, setError] = useState(false);
   const isUrl = name.startsWith('http');
 
+  const containerStyle = [
+    styles.imageBox,
+    {
+      backgroundColor,
+      height,
+      borderRadius,
+      borderWidth: borderColor ? 1 : 0,
+      borderColor,
+      ...(width ? { width } : {}),
+    },
+  ];
+
   if (isUrl && !error) {
     return (
-      <View style={[styles.imageBox, { backgroundColor, height, borderRadius, borderWidth: borderColor ? 1 : 0, borderColor }]}>
+      <View style={containerStyle}>
         <Image
           source={{ uri: name }}
-          style={{ width: '100%', height: '100%' }}
+          style={styles.fullImage}
           resizeMode="cover"
           onError={() => setError(true)}
         />
@@ -49,20 +77,11 @@ export function DynamicImage({ name, backgroundColor = '#eee', borderColor, size
   }
 
   return (
-    <View style={[
-      styles.imageBox,
-      {
-        backgroundColor,
-        height,
-        borderRadius,
-        borderWidth: borderColor ? 1 : 0,
-        borderColor
-      }
-    ]}>
-      <MaterialIcons 
-        name={ICON_MAP[name] ?? 'image'} 
-        size={size} 
-        color="#888" 
+    <View style={containerStyle}>
+      <MaterialIcons
+        name={ICON_MAP[name] ?? 'image'}
+        size={size}
+        color="#888"
       />
     </View>
   );
@@ -73,5 +92,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
+  },
+  fullImage: {
+    width: '100%',
+    height: '100%',
   },
 });

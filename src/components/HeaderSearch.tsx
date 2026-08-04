@@ -14,7 +14,7 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SDUIDataItem, SDUIAction } from '@/schema/types';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '@/theme';
+import { colors, spacing, radius } from '@/theme';
 
 interface Props {
   city: string;
@@ -51,22 +51,22 @@ export function HeaderSearch({ city, avatarInitials, searchPlaceholders }: Props
       : 'Search cars';
 
   return (
-    <View style={[styles.container, { paddingTop: Math.max(insets.top, 12) }]}>
+    <View style={[styles.container, { paddingTop: Math.max(insets.top, spacing.md) }]}>
       {/* Location row */}
       <View style={styles.locationRow}>
         <View style={styles.locationLeft}>
-          <MaterialIcons name="location-on" size={18} color={colors.text.white} />
+          <MaterialIcons name="location-on" size={20} color={colors.text.white} />
           <Text style={styles.cityText}>{city}</Text>
-          <MaterialIcons name="keyboard-arrow-down" size={18} color={colors.text.white} />
+          <MaterialIcons name="keyboard-arrow-down" size={20} color={colors.text.white} />
         </View>
         <TouchableOpacity style={styles.avatar} activeOpacity={0.8}>
           <Text style={styles.avatarText}>{avatarInitials}</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Search bar */}
+      {/* Search bar — solid white on blue header, matching Cars24 screenshot */}
       <View style={styles.searchBar}>
-        <MaterialIcons name="search" size={20} color={colors.text.placeholder} style={styles.searchIconStyle} />
+        <MaterialIcons name="search" size={22} color={colors.text.placeholder} style={styles.searchIconStyle} />
         {searchValue.length === 0 && (
           <Animated.Text style={[styles.searchPlaceholder, { opacity: fadeAnim }]} pointerEvents="none">
             {placeholder}
@@ -86,15 +86,15 @@ export function HeaderSearch({ city, avatarInitials, searchPlaceholders }: Props
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.brand.primary,
-    paddingBottom: 4,
-    paddingHorizontal: 16,
+    paddingBottom: spacing.sm,
+    paddingHorizontal: spacing.lg,
     zIndex: 10,
   },
   locationRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   locationLeft: {
     flexDirection: 'row',
@@ -105,12 +105,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: colors.text.white,
-    marginLeft: 2,
+    marginLeft: 4,
   },
   avatar: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: colors.background.card,
     alignItems: 'center',
     justifyContent: 'center',
@@ -118,33 +118,31 @@ const styles = StyleSheet.create({
   avatarText: {
     color: colors.brand.primary,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: 15,
     letterSpacing: 0.5,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.background.glass,
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    backgroundColor: colors.background.card,
+    borderRadius: radius.sm,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
     position: 'relative',
-    borderWidth: 1,
-    borderColor: colors.border.glass,
   },
   searchIconStyle: {
-    marginRight: 10,
+    marginRight: spacing.sm,
   },
   searchPlaceholder: {
     fontSize: 14,
     color: colors.text.placeholder,
     position: 'absolute',
-    left: 46,
+    left: 48,
   },
   searchInput: {
     flex: 1,
     fontSize: 14,
-    color: colors.text.white,
+    color: colors.text.primary,
     padding: 0,
   },
 });

@@ -5,7 +5,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Badge } from '@/components/common/Badge';
-import { colors } from '@/theme';
+import { colors, spacing } from '@/theme';
 
 export interface SectionHeaderProps {
   title: string;
@@ -28,15 +28,15 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 20,
-    paddingBottom: 10,
-    gap: 10,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.xl,
+    paddingBottom: spacing.sm + 2,
+    gap: spacing.sm + 2,
   },
   title: {
     fontSize: 18,
     fontWeight: '700',
     color: colors.text.primary,
     letterSpacing: -0.3,
-  }
+  },
 });

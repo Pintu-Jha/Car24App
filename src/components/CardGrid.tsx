@@ -1,14 +1,14 @@
 // src/components/CardGrid.tsx
 // 2-column wrapping grid — used for "Buy smarter with our checks" section.
-// Not a FlatList (data is small and static) — uses View wrapping for a true grid.
+// Uses DynamicImage for real images with icon fallback.
 
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SDUIAction, SDUIDataItem } from '@/schema/types';
 import { useActionBus } from '@/sdui/ActionBus';
 import { SectionHeader } from '@/components/SectionHeader';
-import { colors } from '@/theme';
+import { DynamicImage } from '@/components/common/DynamicImage';
+import { colors, spacing, radius } from '@/theme';
 
 interface Header {
   title: string;
@@ -27,11 +27,6 @@ interface Props {
   data?: SDUIDataItem[];
   action?: SDUIAction;
 }
-
-const IMAGE_ICON: Record<string, string> = {
-  pdi2: 'search',
-  check2: 'verified',
-};
 
 const CARD_COLORS = ['#E3F2FD', '#E8F5E9'];
 const ACCENT_COLORS = ['#1565C0', '#1B5E20'];
@@ -63,9 +58,14 @@ export function CardGrid({ header, data }: Props) {
                   style={[styles.card, { backgroundColor: bg }]}
                   onPress={() => item.action && dispatch(item.action)}
                   activeOpacity={0.8}>
-                  <View style={[styles.imageBox, { borderColor: accent + '40' }]}>
-                    <MaterialIcons name={IMAGE_ICON[props.image] ?? 'help-outline'} size={28} color={accent} />
-                  </View>
+                  <DynamicImage
+                    name={props.image}
+                    backgroundColor="transparent"
+                    width={52}
+                    height={52}
+                    borderRadius={26}
+                    size={28}
+                  />
                   <Text style={[styles.cardTitle, { color: accent }]}>{props.title}</Text>
                   <Text style={styles.cardSubtitle} numberOfLines={2}>{props.subtitle}</Text>
                 </TouchableOpacity>
@@ -83,47 +83,35 @@ export function CardGrid({ header, data }: Props) {
 const styles = StyleSheet.create({
   section: {
     backgroundColor: colors.background.card,
-    marginBottom: 8,
-    paddingBottom: 16,
+    marginBottom: spacing.sm,
+    paddingBottom: spacing.lg,
   },
   container: {
-    paddingHorizontal: 16,
-    gap: 12,
+    paddingHorizontal: spacing.lg,
+    gap: spacing.md,
   },
   row: {
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
   },
   card: {
     flex: 1,
-    borderRadius: 14,
-    padding: 14,
+    borderRadius: radius.lg,
+    padding: spacing.lg,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 3,
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
   },
   cardEmpty: {
     flex: 1,
   },
-  imageBox: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: 'rgba(255,255,255,0.7)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
-    borderWidth: 1,
-  },
-  emoji: {
-    fontSize: 26,
-  },
   cardTitle: {
     fontSize: 14,
     fontWeight: '700',
-    marginBottom: 4,
+    marginBottom: spacing.xs,
+    marginTop: spacing.sm,
   },
   cardSubtitle: {
     fontSize: 12,

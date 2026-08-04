@@ -1,5 +1,6 @@
 // src/components/ListRows.tsx
-// Vertical list: icon + title + subtitle + chevron — for "Uncover frauds" section.
+// Vertical list: image/icon + title + subtitle + chevron — for "Uncover frauds" section.
+// Uses DynamicImage for real images with icon fallback.
 
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -7,7 +8,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SDUIAction, SDUIDataItem } from '@/schema/types';
 import { useActionBus } from '@/sdui/ActionBus';
 import { SectionHeader } from '@/components/SectionHeader';
-import { colors } from '@/theme';
+import { DynamicImage } from '@/components/common/DynamicImage';
+import { colors, spacing, radius } from '@/theme';
 
 interface Header {
   title: string;
@@ -26,14 +28,6 @@ interface Props {
   action?: SDUIAction;
 }
 
-// Map icon name from JSON → MaterialIcons glyph
-const ICON_MAP: Record<string, string> = {
-  report: 'description',
-  odometer: 'speed',
-  rto: 'account-balance',
-};
-
-const ICON_COLORS = ['#FF8F00', '#2E7D32', '#1565C0'];
 const ICON_BG = ['#FFF3E0', '#E8F5E9', '#E3F2FD'];
 
 export function ListRows({ header, data }: Props) {
@@ -45,8 +39,6 @@ export function ListRows({ header, data }: Props) {
       <View style={styles.container}>
         {data?.map((item, index) => {
           const props = item.props as unknown as ListRowProps;
-          const iconName = ICON_MAP[props.icon] ?? 'article';
-          const iconColor = ICON_COLORS[index % ICON_COLORS.length];
           const iconBg = ICON_BG[index % ICON_BG.length];
 
           return (
@@ -58,10 +50,15 @@ export function ListRows({ header, data }: Props) {
               ]}
               onPress={() => item.action && dispatch(item.action)}
               activeOpacity={0.7}>
-              {/* Icon */}
-              <View style={[styles.iconBox, { backgroundColor: iconBg }]}>
-                <MaterialIcons name={iconName} size={22} color={iconColor} />
-              </View>
+              {/* Icon / Image */}
+              <DynamicImage
+                name={props.icon}
+                backgroundColor={iconBg}
+                width={48}
+                height={48}
+                borderRadius={radius.sm}
+                size={22}
+              />
 
               {/* Text */}
               <View style={styles.textBlock}>
@@ -84,11 +81,11 @@ export function ListRows({ header, data }: Props) {
 const styles = StyleSheet.create({
   section: {
     backgroundColor: colors.background.card,
-    marginBottom: 8,
-    paddingBottom: 8,
+    marginBottom: spacing.sm,
+    paddingBottom: spacing.sm,
   },
   container: {
-    paddingHorizontal: 16,
+    paddingHorizontal: spacing.lg,
   },
   row: {
     flexDirection: 'row',
@@ -99,14 +96,6 @@ const styles = StyleSheet.create({
   rowBorder: {
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.border.light,
-  },
-  iconBox: {
-    width: 48,
-    height: 48,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
   },
   textBlock: {
     flex: 1,
@@ -119,7 +108,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 12,
-    color: '#777',
+    color: colors.text.secondary,
     lineHeight: 17,
   },
 });

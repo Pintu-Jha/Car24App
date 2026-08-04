@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { colors } from '@/theme';
+import { colors, spacing, radius } from '@/theme';
 
 interface Props {
   text: string;
@@ -17,8 +17,8 @@ export function Badge({ text }: Props) {
 const styles = StyleSheet.create({
   badge: {
     backgroundColor: colors.brand.accent,
-    borderRadius: 20,
-    paddingHorizontal: 10,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.sm + 2,
     paddingVertical: 3,
   },
   badgeText: {

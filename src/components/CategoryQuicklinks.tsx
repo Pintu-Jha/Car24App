@@ -1,6 +1,6 @@
 // src/components/CategoryQuicklinks.tsx
-// Horizontal scrollable icon+label row. One item is "active" (orange underline).
-// Tapping fires the item's action (compound: update_state + navigate) via ActionBus.
+// Horizontal scrollable icon+label row. One item is "active" (white bg + bold label).
+// Tapping fires the item's action via ActionBus.
 
 import React from 'react';
 import {
@@ -13,7 +13,7 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SDUIAction, SDUIDataItem } from '@/schema/types';
 import { useActionBus } from '@/sdui/ActionBus';
-import { colors } from '@/theme';
+import { colors, spacing } from '@/theme';
 
 // Map icon name from JSON → MaterialIcons glyph name
 const ICON_MAP: Record<string, string> = {
@@ -71,7 +71,7 @@ export function CategoryQuicklinks({ data }: Props) {
               <View style={[styles.iconCircle, isActive && styles.iconCircleActive]}>
                 <MaterialIcons
                   name={iconName}
-                  size={24}
+                  size={26}
                   color={isActive ? colors.brand.primary : colors.text.white}
                 />
               </View>
@@ -92,20 +92,20 @@ const styles = StyleSheet.create({
     backgroundColor: colors.brand.primary,
   },
   list: {
-    paddingHorizontal: 12,
-    paddingTop: 12,
-    gap: 8,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.md,
+    gap: spacing.sm,
   },
   item: {
     alignItems: 'center',
-    width: 72,
-    paddingHorizontal: 4,
-    paddingBottom: 16,
+    width: 76,
+    paddingHorizontal: spacing.xs,
+    paddingBottom: spacing.lg,
   },
   iconCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     backgroundColor: colors.background.glass,
     alignItems: 'center',
     justifyContent: 'center',
@@ -127,8 +127,8 @@ const styles = StyleSheet.create({
   activeLine: {
     position: 'absolute',
     bottom: 0,
-    left: 8,
-    right: 8,
+    left: spacing.sm,
+    right: spacing.sm,
     height: 3,
     backgroundColor: colors.text.white,
     borderTopLeftRadius: 3,

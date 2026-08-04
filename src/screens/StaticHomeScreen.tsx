@@ -4,44 +4,43 @@
 // Visual output should be identical to SDUIHomeScreen with sample-home.json.
 
 import React, { useEffect, useRef } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList, Image } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { markEnd, markStart, printReport } from '@/perf/markers';
-import { Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '@/theme';
+import { colors, spacing, radius } from '@/theme';
 
 // ── Static data (mirrors sample-home.json exactly) ────────────────────────────
 
 const BUY_CARDS = [
-  { id: '1', title: 'All used cars', emoji: '🚙' },
-  { id: '2', title: 'Budget used cars', emoji: '🚗' },
-  { id: '3', title: 'Premium used cars', emoji: '🏎' },
-  { id: '4', title: 'New cars', emoji: '🚘' },
+  { id: '1', title: 'All used cars', image: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=400&q=80' },
+  { id: '2', title: 'Budget used cars', image: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=400&q=80' },
+  { id: '3', title: 'Premium used cars', image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=400&q=80' },
+  { id: '4', title: 'New cars', image: 'https://images.unsplash.com/photo-1502877338535-349c672aa56c?auto=format&fit=crop&w=400&q=80' },
 ];
 
 const SELL_CARDS = [
-  { id: '1', title: 'Sell your car', emoji: '🔑' },
-  { id: '2', title: 'Check car valuation', emoji: '💵' },
-  { id: '3', title: 'Scrap your car', emoji: '🚧' },
+  { id: '1', title: 'Sell your car', image: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=400&q=80' },
+  { id: '2', title: 'Check car valuation', image: 'https://images.unsplash.com/photo-1580519542036-ed47f3e42f9d?auto=format&fit=crop&w=400&q=80' },
+  { id: '3', title: 'Scrap your car', image: 'https://images.unsplash.com/photo-1558222218-b7b54eede3f3?auto=format&fit=crop&w=400&q=80' },
 ];
 
-const LOAN_ITEMS: { id: string; label: string; icon: string; bg: string }[] = [
-  { id: '1', label: 'Used car loan', icon: 'account-balance', bg: '#E3F2FD' },
-  { id: '2', label: 'Loan against car', icon: 'directions-car', bg: '#FFF3E0' },
-  { id: '3', label: 'Personal loan', icon: 'credit-card', bg: '#E8F5E9' },
-  { id: '4', label: 'Credit score', icon: 'bar-chart', bg: '#F3E5F5' },
+const LOAN_ITEMS: { id: string; label: string; icon: string; bg: string; image: string }[] = [
+  { id: '1', label: 'Used car loan', icon: 'account-balance', bg: '#E8F4FD', image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=400&q=80' },
+  { id: '2', label: 'Loan against car', icon: 'directions-car', bg: '#FFF5E6', image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=400&q=80' },
+  { id: '3', label: 'Personal loan', icon: 'credit-card', bg: '#E8F5E9', image: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=400&q=80' },
+  { id: '4', label: 'Credit score', icon: 'bar-chart', bg: '#F3E5F5', image: 'https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=400&q=80' },
 ];
 
 const CHECK_CARDS = [
-  { id: '1', title: 'New car PDI', emoji: '🔍' },
-  { id: '2', title: 'Used car check', emoji: '✅' },
-  { id: '3', title: 'Vehicle history', emoji: '📋' },
+  { id: '1', title: 'New car PDI', image: 'https://images.unsplash.com/photo-1632731835773-8968038817a1?auto=format&fit=crop&w=400&q=80' },
+  { id: '2', title: 'Used car check', image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=400&q=80' },
+  { id: '3', title: 'Vehicle history', image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=400&q=80' },
 ];
 
 const GRID_CARDS = [
-  { id: '1', title: 'New car PDI', subtitle: 'Pre delivery inspection', emoji: 'search', bg: '#E3F2FD', accent: '#1565C0' },
-  { id: '2', title: 'Used car check', subtitle: '300+ point evaluation', emoji: 'verified', bg: '#E8F5E9', accent: '#1B5E20' },
+  { id: '1', title: 'New car PDI', subtitle: 'Pre delivery inspection', icon: 'search', bg: '#E3F2FD', accent: '#1565C0' },
+  { id: '2', title: 'Used car check', subtitle: '300+ point evaluation', icon: 'verified', bg: '#E8F5E9', accent: '#1B5E20' },
 ];
 
 const FRAUD_ROWS = [
@@ -75,14 +74,54 @@ function StaticSectionHeader({ title, badge }: { title: string; badge?: string }
   );
 }
 
-function StaticCard({ title, emoji, bg, textColor = '#FFF' }: { title: string; emoji: string; bg: string; textColor?: string }) {
+function CardImageInline({ uri }: { uri: string }) {
+  const [error, setError] = React.useState(false);
+  if (!error) {
+    return (
+      <Image
+        source={{ uri }}
+        style={styles.railCardImage}
+        resizeMode="contain"
+        onError={() => setError(true)}
+      />
+    );
+  }
+  return (
+    <View style={styles.railCardImageFallback}>
+      <MaterialIcons name="directions-car" size={40} color="rgba(255,255,255,0.5)" />
+    </View>
+  );
+}
+
+function StaticCard({ title, image, bg, textColor = '#FFF' }: { title: string; image: string; bg: string; textColor?: string }) {
   return (
     <TouchableOpacity style={[styles.railCard, { backgroundColor: bg }]} onPress={() => onPress(title)} activeOpacity={0.85}>
-      <View style={[styles.railCardImage, { backgroundColor: bg === '#0F1F33' ? '#1A3050' : bg === '#1B4332' ? '#2D6A4F' : '#FFE8CC' }]}>
-        <Text style={styles.railCardEmoji}>{emoji}</Text>
-      </View>
       <Text style={[styles.railCardTitle, { color: textColor }]} numberOfLines={2}>{title}</Text>
+      <View style={styles.railCardImageBox}>
+        <CardImageInline uri={image} />
+      </View>
     </TouchableOpacity>
+  );
+}
+
+function LoanItemInline({ uri, bg }: { uri: string; bg: string }) {
+  const [error, setError] = React.useState(false);
+  if (!error) {
+    return (
+      <View style={[styles.loanImageBox, { backgroundColor: bg }]}>
+        <Image
+          source={{ uri }}
+          style={styles.loanImage}
+          resizeMode="cover"
+          onError={() => setError(true)}
+        />
+      </View>
+    );
+  }
+  return (
+    <View style={[styles.loanImageBox, { backgroundColor: bg }]}>
+      <MaterialIcons name="image" size={28} color="#666" />
+    </View>
   );
 }
 
@@ -93,7 +132,6 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 const Tab = createMaterialTopTabNavigator();
 
 function TabContent({ tabId }: { tabId: string }) {
-  // Determine visibility logic exactly as SDUI does
   const showBuy = tabId === 'all' || tabId === 'buy';
   const showSell = tabId === 'all' || tabId === 'sell';
   const showLoans = tabId === 'all' || tabId === 'loans';
@@ -108,7 +146,7 @@ function TabContent({ tabId }: { tabId: string }) {
           <StaticSectionHeader title="Buy car" badge="Up to ₹80,000 off" />
           <FlatList data={BUY_CARDS} horizontal showsHorizontalScrollIndicator={false}
             keyExtractor={i => i.id} contentContainerStyle={styles.railList}
-            renderItem={({ item }) => <StaticCard title={item.title} emoji={item.emoji} bg="#0F1F33" />} />
+            renderItem={({ item }) => <StaticCard title={item.title} image={item.image} bg={colors.background.darkRail} />} />
         </>
       )}
 
@@ -118,7 +156,7 @@ function TabContent({ tabId }: { tabId: string }) {
           <StaticSectionHeader title="Sell your car" />
           <FlatList data={SELL_CARDS} horizontal showsHorizontalScrollIndicator={false}
             keyExtractor={i => i.id} contentContainerStyle={styles.railList}
-            renderItem={({ item }) => <StaticCard title={item.title} emoji={item.emoji} bg="#1B4332" />} />
+            renderItem={({ item }) => <StaticCard title={item.title} image={item.image} bg={colors.background.greenRail} />} />
         </>
       )}
 
@@ -130,9 +168,7 @@ function TabContent({ tabId }: { tabId: string }) {
             keyExtractor={i => i.id} contentContainerStyle={styles.iconList}
             renderItem={({ item }) => (
               <TouchableOpacity style={styles.iconItem} onPress={() => onPress(item.label)} activeOpacity={0.7}>
-                <View style={[styles.iconCircle, { backgroundColor: item.bg }]}>
-                  <MaterialIcons name={item.icon} size={28} color="#555" />
-                </View>
+                <LoanItemInline uri={item.image} bg={item.bg} />
                 <Text style={styles.iconLabel}>{item.label}</Text>
               </TouchableOpacity>
             )} />
@@ -145,7 +181,7 @@ function TabContent({ tabId }: { tabId: string }) {
           <StaticSectionHeader title="Car check services" />
           <FlatList data={CHECK_CARDS} horizontal showsHorizontalScrollIndicator={false}
             keyExtractor={i => i.id} contentContainerStyle={styles.railList}
-            renderItem={({ item }) => <StaticCard title={item.title} emoji={item.emoji} bg="#FFF8F0" textColor="#2C2C2C" />} />
+            renderItem={({ item }) => <StaticCard title={item.title} image={item.image} bg={colors.background.creamRail} textColor={colors.text.primary} />} />
         </>
       )}
 
@@ -158,7 +194,7 @@ function TabContent({ tabId }: { tabId: string }) {
               <TouchableOpacity key={card.id} style={[styles.gridCard, { backgroundColor: card.bg }]}
                 onPress={() => onPress(card.title)} activeOpacity={0.8}>
                 <View style={styles.gridImageBox}>
-                  <MaterialIcons name={card.emoji} size={28} color={card.accent} />
+                  <MaterialIcons name={card.icon} size={28} color={card.accent} />
                 </View>
                 <Text style={[styles.gridTitle, { color: card.accent }]}>{card.title}</Text>
                 <Text style={styles.gridSubtitle}>{card.subtitle}</Text>
@@ -212,17 +248,17 @@ export function StaticHomeScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.background.main }}>
       {/* Header */}
-      <View style={[styles.header, { paddingTop: Math.max(insets.top, 12) }]}>
+      <View style={[styles.header, { paddingTop: Math.max(insets.top, spacing.md) }]}>
         <View style={styles.locationRow}>
           <View style={styles.locationLeft}>
-            <MaterialIcons name="location-on" size={18} color={colors.text.white} />
+            <MaterialIcons name="location-on" size={20} color={colors.text.white} />
             <Text style={styles.city}>Bangalore</Text>
-            <MaterialIcons name="keyboard-arrow-down" size={18} color={colors.text.white} />
+            <MaterialIcons name="keyboard-arrow-down" size={20} color={colors.text.white} />
           </View>
           <View style={styles.avatar}><Text style={styles.avatarText}>PJ</Text></View>
         </View>
         <View style={styles.searchBar}>
-          <MaterialIcons name="search" size={20} color={colors.text.placeholder} style={{ marginRight: 10 }} />
+          <MaterialIcons name="search" size={22} color={colors.text.placeholder} style={{ marginRight: spacing.sm }} />
           <Text style={styles.searchPlaceholder}>Search Swift</Text>
         </View>
       </View>
@@ -231,7 +267,7 @@ export function StaticHomeScreen() {
         screenOptions={{
           tabBarScrollEnabled: true,
           tabBarStyle: { backgroundColor: colors.brand.primary, elevation: 0, shadowOpacity: 0 },
-          tabBarItemStyle: { width: 'auto', paddingHorizontal: 12, paddingBottom: 4 },
+          tabBarItemStyle: { width: 'auto', paddingHorizontal: spacing.md, paddingBottom: spacing.xs },
           tabBarLabelStyle: { color: colors.text.white, fontSize: 12, fontWeight: '700', textTransform: 'none' },
           tabBarIndicatorStyle: { backgroundColor: colors.background.card, height: 3, borderTopLeftRadius: 3, borderTopRightRadius: 3 },
         }}
@@ -261,67 +297,53 @@ export function StaticHomeScreen() {
   );
 }
 
-
-
 const styles = StyleSheet.create({
   scroll: { flex: 1, backgroundColor: colors.background.main },
-  content: { paddingBottom: 16 },
-  // Header
-  header: { backgroundColor: colors.brand.primary, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 4, zIndex: 10 },
-  locationRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
+  content: { paddingBottom: spacing.lg },
+  // Header — white search bar on blue
+  header: { backgroundColor: colors.brand.primary, paddingHorizontal: spacing.lg, paddingTop: spacing.md, paddingBottom: spacing.sm, zIndex: 10 },
+  locationRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.md },
   locationLeft: { flexDirection: 'row', alignItems: 'center', gap: 2 },
-  pin: { fontSize: 14 },
-  city: { fontSize: 16, fontWeight: '700', color: colors.text.white, marginLeft: 2 },
-  chevron: { fontSize: 14, color: colors.text.white },
-  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.background.glass, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, borderWidth: 1, borderColor: colors.border.glass },
-  searchIcon: { fontSize: 16, marginRight: 10 },
+  city: { fontSize: 16, fontWeight: '700', color: colors.text.white, marginLeft: 4 },
+  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.background.card, borderRadius: radius.sm, paddingHorizontal: spacing.lg, paddingVertical: spacing.md },
   searchPlaceholder: { fontSize: 14, color: colors.text.placeholder },
-  avatar: { width: 38, height: 38, borderRadius: 19, backgroundColor: colors.background.card, alignItems: 'center', justifyContent: 'center' },
-  avatarText: { color: colors.brand.primary, fontWeight: '700', fontSize: 14 },
+  avatar: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.background.card, alignItems: 'center', justifyContent: 'center' },
+  avatarText: { color: colors.brand.primary, fontWeight: '700', fontSize: 15 },
   // Quicklinks
-  quicklinksWrap: { backgroundColor: colors.brand.primary },
-  quicklinksList: { paddingHorizontal: 12, paddingTop: 12, gap: 8 },
-  qlItem: { alignItems: 'center', width: 72, paddingHorizontal: 4, paddingBottom: 16 },
   qlCircle: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.background.glass, alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
   qlCircleActive: { backgroundColor: colors.background.card },
-  qlEmoji: { fontSize: 20 },
-  qlLabel: { fontSize: 11, color: colors.text.white, textAlign: 'center', lineHeight: 14, fontWeight: '500' },
-  qlLabelActive: { fontWeight: '700' },
-  qlActiveLine: { position: 'absolute', bottom: 0, left: 8, right: 8, height: 3, backgroundColor: colors.text.white, borderTopLeftRadius: 3, borderTopRightRadius: 3 },
   // Section header
-  sectionHeader: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 20, paddingBottom: 10, gap: 10 },
+  sectionHeader: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg, paddingTop: spacing.xl, paddingBottom: spacing.sm + 2, gap: spacing.sm + 2 },
   sectionTitle: { fontSize: 18, fontWeight: '700', color: colors.text.primary, letterSpacing: -0.3 },
-  badge: { backgroundColor: colors.brand.accent, borderRadius: 20, paddingHorizontal: 10, paddingVertical: 3 },
+  badge: { backgroundColor: colors.brand.accent, borderRadius: radius.pill, paddingHorizontal: spacing.sm + 2, paddingVertical: 3 },
   badgeText: { color: colors.text.white, fontSize: 11, fontWeight: '700' },
-  // Rail cards
-  railList: { paddingHorizontal: 16, paddingBottom: 16, gap: 12 },
-  railCard: { width: 140, borderRadius: 14, overflow: 'hidden', shadowColor: '#000', shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.15, shadowRadius: 6, elevation: 5 },
-  railCardImage: { height: 100, alignItems: 'center', justifyContent: 'center' },
-  railCardEmoji: { fontSize: 44 },
-  railCardTitle: { fontSize: 13, fontWeight: '600', padding: 10, lineHeight: 18 },
-  // Icon rail
-  iconSection: { backgroundColor: colors.background.card, marginBottom: 8, paddingBottom: 16 },
-  iconList: { paddingHorizontal: 16, gap: 16 },
+  // Rail cards — title top-left, image bottom-right
+  railList: { paddingHorizontal: spacing.lg, paddingBottom: spacing.lg, gap: spacing.md },
+  railCard: { width: 140, height: 150, borderRadius: radius.md, overflow: 'hidden', padding: spacing.md, position: 'relative' },
+  railCardTitle: { fontSize: 14, fontWeight: '700', lineHeight: 20, zIndex: 1, maxWidth: '70%' },
+  railCardImageBox: { position: 'absolute', bottom: 0, right: 0, width: 90, height: 90, alignItems: 'flex-end', justifyContent: 'flex-end' },
+  railCardImage: { width: '100%', height: '100%' },
+  railCardImageFallback: { width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' },
+  // Icon rail — rectangular image cards
+  iconSection: { backgroundColor: colors.background.card, marginBottom: spacing.sm, paddingBottom: spacing.lg },
+  iconList: { paddingHorizontal: spacing.lg, gap: spacing.lg },
   iconItem: { alignItems: 'center', width: 80 },
-  iconCircle: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center', marginBottom: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 4, elevation: 3 },
-  iconEmoji: { fontSize: 28 },
-  iconLabel: { fontSize: 12, color: colors.text.secondary, textAlign: 'center', fontWeight: '500', lineHeight: 16 },
+  iconLabel: { fontSize: 12, color: colors.text.primary, textAlign: 'center', fontWeight: '600', lineHeight: 16 },
+  loanImageBox: { width: 72, height: 72, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', marginBottom: spacing.sm },
+  loanImage: { width: '100%', height: '100%' },
   // Grid
-  gridSection: { backgroundColor: colors.background.card, marginBottom: 8, paddingBottom: 16 },
-  gridRow: { flexDirection: 'row', paddingHorizontal: 16, gap: 12 },
-  gridCard: { flex: 1, borderRadius: 14, padding: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 6, elevation: 3 },
-  gridImageBox: { width: 52, height: 52, borderRadius: 26, backgroundColor: 'rgba(255,255,255,0.7)', alignItems: 'center', justifyContent: 'center', marginBottom: 10, borderWidth: 1, borderColor: 'rgba(0,0,0,0.08)' },
-  gridEmoji: { fontSize: 26 },
-  gridTitle: { fontSize: 14, fontWeight: '700', marginBottom: 4 },
+  gridSection: { backgroundColor: colors.background.card, marginBottom: spacing.sm, paddingBottom: spacing.lg },
+  gridRow: { flexDirection: 'row', paddingHorizontal: spacing.lg, gap: spacing.md },
+  gridCard: { flex: 1, borderRadius: radius.lg, padding: spacing.lg, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2 },
+  gridImageBox: { width: 52, height: 52, borderRadius: 26, backgroundColor: 'rgba(255,255,255,0.7)', alignItems: 'center', justifyContent: 'center', marginBottom: spacing.sm + 2 },
+  gridTitle: { fontSize: 14, fontWeight: '700', marginBottom: spacing.xs },
   gridSubtitle: { fontSize: 12, color: colors.text.secondary, lineHeight: 17 },
   // List rows
-  listSection: { backgroundColor: colors.background.card, marginBottom: 8, paddingBottom: 8 },
-  listRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16, gap: 14 },
+  listSection: { backgroundColor: colors.background.card, marginBottom: spacing.sm, paddingBottom: spacing.sm },
+  listRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: spacing.lg, gap: 14 },
   listRowBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border.light },
-  listIcon: { width: 48, height: 48, borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  listIconEmoji: { fontSize: 22 },
+  listIcon: { width: 48, height: 48, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   listText: { flex: 1 },
   listTitle: { fontSize: 14, fontWeight: '600', color: colors.text.primary, marginBottom: 3 },
   listSubtitle: { fontSize: 12, color: colors.text.secondary, lineHeight: 17 },
-  listChevron: { fontSize: 22, color: '#BDBDBD' },
 });

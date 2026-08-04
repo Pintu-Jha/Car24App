@@ -1,15 +1,36 @@
+// src/theme.ts
+// Centralized design tokens — every component imports from here.
+// No hardcoded colors, spacing, or radii anywhere else.
+
+export const spacing = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 20,
+  xxl: 24,
+} as const;
+
+export const radius = {
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 20,
+  pill: 100,
+} as const;
+
 export const colors = {
   brand: {
-    primary: '#282CBA',
+    primary: '#3F3FD5',
     accent: '#FF4500',
   },
   background: {
-    main: '#F7F7F7',
+    main: '#F5F5F5',
     card: '#FFFFFF',
-    darkRail: '#0F1F33',
-    darkRailAccent: '#1A3050',
-    greenRail: '#1B4332',
-    greenRailAccent: '#2D6A4F',
+    darkRail: '#1B2845',
+    darkRailAccent: '#243B5E',
+    greenRail: '#1B6B3E',
+    greenRailAccent: '#248F53',
     creamRail: '#FFF8F0',
     creamRailAccent: '#FFE8CC',
     glass: 'rgba(255, 255, 255, 0.15)',
@@ -21,7 +42,7 @@ export const colors = {
     primary: '#1A1A2E',
     secondary: '#666666',
     white: '#FFFFFF',
-    placeholder: '#B0B2F2',
+    placeholder: '#999999',
     unknownPrimary: '#5D4037',
     unknownSecondary: '#E65100',
     tabInactive: '#9B9B9B',
@@ -30,11 +51,12 @@ export const colors = {
     light: '#EEEEEE',
     glass: 'rgba(255, 255, 255, 0.2)',
     tabTop: '#E0E0E0',
+    cream: '#F0D9A8',
   },
   status: {
     info: '#1565C0',
     success: '#2E7D32',
     warning: '#FF8F00',
     error: '#E65100',
-  }
-};
+  },
+} as const;
