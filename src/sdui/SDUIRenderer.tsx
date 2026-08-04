@@ -24,7 +24,7 @@ const MemoizedSection = React.memo(
       </ErrorBoundary>
     );
   },
-  (prev, next) => JSON.stringify(prev.section) === JSON.stringify(next.section)
+  (prev, next) => prev.section === next.section || prev.section.id === next.section.id
 );
 
 export function SDUIRenderer({ page, registry }: Props) {

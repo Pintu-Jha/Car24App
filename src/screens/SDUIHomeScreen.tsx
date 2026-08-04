@@ -27,36 +27,24 @@ interface Props {
 }
 
 export function SDUIHomeScreen({ useUnknownPayload = false }: Props) {
-  const [page, setPage] = useState<SDUIPage | null>(null);
+  const page = useUnknownPayload ? PAYLOADS.unknown : PAYLOADS.normal;
   const hasReported = useRef(false);
 
-  useEffect(() => {
+  if (!hasReported.current) {
     markStart('sdui_total');
     markStart('json_parse');
+    markEnd('json_parse');
+    markStart('view_build');
+  }
 
-    // Simulate async JSON fetch with a microtask tick
-    Promise.resolve().then(() => {
-      markEnd('json_parse');
-      markStart('view_build');
-
-      const payload = useUnknownPayload ? PAYLOADS.unknown : PAYLOADS.normal;
-      setPage(payload);
-    });
-  }, [useUnknownPayload]);
-
-  // Report once view has built (after first render with data)
   useEffect(() => {
-    if (page && !hasReported.current) {
+    if (!hasReported.current) {
       markEnd('view_build');
       markEnd('sdui_total');
       printReport();
       hasReported.current = true;
     }
-  }, [page]);
-
-  if (!page) {
-    return <View style={styles.loading} />;
-  }
+  }, []);
 
   return (
     <View style={styles.container}>

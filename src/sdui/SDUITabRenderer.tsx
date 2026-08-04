@@ -26,9 +26,33 @@ interface Props {
   renderSection: (section: SDUISection, registry: Record<string, React.ComponentType<any>>) => React.ReactNode;
 }
 
-export function SDUITabRenderer({ quicklinksSection, contentSections, registry, renderSection }: Props) {
-  const { state } = useActionBus();
+const TabScreenContent = React.memo(
+  ({
+    quicklinkId,
+    contentSections,
+    registry,
+    renderSection,
+  }: {
+    quicklinkId: string;
+    contentSections: SDUISection[];
+    registry: Record<string, React.ComponentType<any>>;
+    renderSection: (section: SDUISection, registry: Record<string, React.ComponentType<any>>) => React.ReactNode;
+  }) => {
+    const { state } = useActionBus();
+    const mockState = React.useMemo(() => ({ ...state, activeTab: quicklinkId }), [state, quicklinkId]);
 
+    return (
+      <SDUIListRenderer
+        sections={contentSections}
+        registry={registry}
+        mockState={mockState}
+        renderSection={renderSection}
+      />
+    );
+  }
+);
+
+export function SDUITabRenderer({ quicklinksSection, contentSections, registry, renderSection }: Props) {
   if (!quicklinksSection.data) return null;
 
   return (
@@ -42,9 +66,6 @@ export function SDUITabRenderer({ quicklinksSection, contentSections, registry, 
       }}
     >
       {quicklinksSection.data.map(quicklink => {
-        // Mock the activeTab state so SDUI rendering rules apply accurately per tab
-        const mockState = { ...state, activeTab: quicklink.id };
-
         return (
           <Tab.Screen
             key={quicklink.id}
@@ -63,10 +84,10 @@ export function SDUITabRenderer({ quicklinksSection, contentSections, registry, 
             }}
           >
             {() => (
-              <SDUIListRenderer
-                sections={contentSections}
+              <TabScreenContent
+                quicklinkId={quicklink.id}
+                contentSections={contentSections}
                 registry={registry}
-                mockState={mockState}
                 renderSection={renderSection}
               />
             )}
