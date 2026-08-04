@@ -83,8 +83,13 @@ export function ActionBusProvider({ children }: { children: React.ReactNode }) {
 
   const getState = useCallback((key: string) => state[key], [state]);
 
+  const contextValue = React.useMemo(
+    () => ({ state, dispatch, getState }),
+    [state, dispatch, getState]
+  );
+
   return (
-    <ActionBusContext.Provider value={{ state, dispatch, getState }}>
+    <ActionBusContext.Provider value={contextValue}>
       {children}
     </ActionBusContext.Provider>
   );

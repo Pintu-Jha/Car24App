@@ -10,6 +10,7 @@ import sampleHome from '@/schema/sample-home.json';
 import withUnknown from '@/schema/with-unknown-component.json';
 import { SDUIPage } from '@/schema/types';
 import { SDUIRenderer } from '@/sdui/SDUIRenderer';
+import { componentRegistry } from '@/sdui/registry';
 import { markEnd, markStart, printReport } from '@/perf/markers';
 import { colors } from '@/theme';
 
@@ -59,7 +60,7 @@ export function SDUIHomeScreen({ useUnknownPayload = false }: Props) {
 
   return (
     <View style={styles.container}>
-      <SDUIRenderer page={page} />
+      <SDUIRenderer page={page} registry={componentRegistry} />
     </View>
   );
 }

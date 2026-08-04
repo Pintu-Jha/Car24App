@@ -5,8 +5,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import { SDUIPage, SDUISection } from '@/schema/types';
 import { useActionBus } from '@/sdui/ActionBus';
-import { componentRegistry } from '@/sdui/registry';
 import { UnknownFallback } from '@/sdui/UnknownFallback';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { colors } from '@/theme';
 
 const Tab = createMaterialTopTabNavigator();
@@ -23,10 +23,25 @@ const QUICKLINK_ICON_MAP: Record<string, string> = {
 
 interface Props {
   page: SDUIPage;
+  registry: Record<string, React.ComponentType<any>>;
   useUnknownPayload?: boolean;
 }
 
-export function SDUIRenderer({ page }: Props) {
+const MemoizedSection = React.memo(
+  ({ section, registry }: { section: SDUISection; registry: Record<string, React.ComponentType<any>> }) => {
+    const Component = registry[section.type];
+    if (!Component) return <UnknownFallback section={section} />;
+
+    return (
+      <ErrorBoundary fallbackMessage={`Failed to render component: ${section.type}`}>
+        <Component {...section.props} data={section.data} action={section.action} />
+      </ErrorBoundary>
+    );
+  },
+  (prev, next) => JSON.stringify(prev.section) === JSON.stringify(next.section)
+);
+
+export function SDUIRenderer({ page, registry }: Props) {
   const { state } = useActionBus();
 
   // Split sections to inject Top Tabs organically
@@ -34,16 +49,18 @@ export function SDUIRenderer({ page }: Props) {
   const quicklinksSection = page.sections.find(s => s.type === 'category_quicklinks');
   const contentSections = page.sections.filter(s => s.type !== 'header_search' && s.type !== 'category_quicklinks');
 
-  const HeaderComponent = headerSection ? componentRegistry[headerSection.type] || UnknownFallback : null;
+  const HeaderComponent = headerSection ? registry[headerSection.type] || UnknownFallback : null;
 
   return (
     <View style={styles.container}>
       {HeaderComponent && headerSection && (
-        <HeaderComponent
-          {...headerSection.props}
-          data={headerSection.data}
-          action={headerSection.action}
-        />
+        <ErrorBoundary fallbackMessage="Failed to render Header">
+          <HeaderComponent
+            {...headerSection.props}
+            data={headerSection.data}
+            action={headerSection.action}
+          />
+        </ErrorBoundary>
       )}
 
       {quicklinksSection && quicklinksSection.data ? (
@@ -85,19 +102,9 @@ export function SDUIRenderer({ page }: Props) {
                   >
                     {contentSections
                       .filter(section => isVisible(section, mockState))
-                      .map(section => {
-                        const Component = componentRegistry[section.type];
-                        if (!Component) return <UnknownFallback key={section.id} section={section} />;
-
-                        return (
-                          <Component
-                            key={section.id}
-                            {...section.props}
-                            data={section.data}
-                            action={section.action}
-                          />
-                        );
-                      })}
+                      .map(section => (
+                        <MemoizedSection key={section.id} section={section} registry={registry} />
+                      ))}
                   </ScrollView>
                 )}
               </Tab.Screen>
@@ -108,19 +115,9 @@ export function SDUIRenderer({ page }: Props) {
         <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
           {contentSections
             .filter(section => isVisible(section, state))
-            .map(section => {
-              const Component = componentRegistry[section.type];
-              if (!Component) return <UnknownFallback key={section.id} section={section} />;
-
-              return (
-                <Component
-                  key={section.id}
-                  {...section.props}
-                  data={section.data}
-                  action={section.action}
-                />
-              );
-            })}
+            .map(section => (
+              <MemoizedSection key={section.id} section={section} registry={registry} />
+            ))}
         </ScrollView>
       )}
     </View>
