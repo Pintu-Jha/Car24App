@@ -15,26 +15,22 @@ interface Props {
 }
 
 export function UnknownFallback({ section }: Props) {
-  if (__DEV__) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>UNKNOWN COMPONENT</Text>
-        </View>
-        <Text style={styles.typeLabel}>
-          Type: <Text style={styles.typeValue}>{section.type}</Text>
-        </Text>
-        <Text style={styles.hint}>
-          The renderer encountered a component type it doesn't recognize. Instead of crashing, it safely rendered this fallback block.
-        </Text>
-        <View style={styles.iconBox}>
-          <MaterialIcons name="bug-report" size={24} color={colors.status.error} />
-        </View>
+  return (
+    <View style={styles.container}>
+      <View style={styles.badge}>
+        <Text style={styles.badgeText}>UNKNOWN COMPONENT FALLBACK</Text>
       </View>
-    );
-  }
-
-  return null;
+      <Text style={styles.typeLabel}>
+        Type: <Text style={styles.typeValue}>{section?.type || 'unknown'}</Text>
+      </Text>
+      <Text style={styles.hint}>
+        The renderer encountered a component type it doesn't recognize. Instead of crashing, it safely rendered this fallback block.
+      </Text>
+      <View style={styles.iconBox}>
+        <MaterialIcons name="bug-report" size={24} color={colors.status.error} />
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
