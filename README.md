@@ -40,8 +40,10 @@ The architecture adheres to strict separation of concerns, decoupling network sc
 ---
 
 ## 3. Graceful Fallback & Fault Tolerance (No Crashes Guaranteed)
-In server-driven apps, the server will inevitably send payloads featuring new component types (or malformed props) to older client binaries. Our system enforces **zero crashes** through two distinct defensive barriers:
-- **Registry Level — Unknown Component Fallback:** When `SDUIRenderer` encounters an unmapped section type (e.g., `"type": "future_3d_carousel"`), it gracefully routes the data to `UnknownFallback`. In production, this renders nothing (`null`), preserving normal screen operation. In `__DEV__` mode, it renders a diagnostic yellow card highlighting the unsupported component type and its payload for rapid debugging.
+
+In server-driven apps, the server will inevitably send payloads featuring new component types (or malformed props) to older client binaries. Our system enforces zero crashes through two distinct defensive barriers:
+
+- **Registry Level — Unknown Component Fallback:** When `SDUIRenderer` encounters an unmapped section type (e.g., `"type": "future_3d_carousel"`), it gracefully routes the data to `UnknownFallback`. By default this renders nothing (`null`) to real users, preserving normal screen operation. The diagnostic card (showing the unrecognized type and its raw props) is shown in `__DEV__` builds, and can also be triggered on-demand in a release build via the app's Developer Mode toggle ("Fallback Demo" mode) — this is what the submission's screen recording uses, so the behavior is visible on camera without weakening the real-user guarantee: a genuine production release, with the toggle untouched, always resolves an unknown type to `null`.
 - **Runtime Level — Granular Error Boundaries:** Every section rendered through the registry is wrapped in a dedicated `ErrorBoundary` (`src/components/common/ErrorBoundary.tsx`). If a custom native component throws a runtime exception during rendering or lifecycle evaluation, the boundary traps the failure locally and displays a stylized error placeholder, keeping the surrounding rails and tabs functioning normally.
 
 ---

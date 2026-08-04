@@ -10,27 +10,37 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { SDUISection } from '@/schema/types';
 import { colors } from '@/theme';
 
+import { useActionBus } from '@/sdui/ActionBus';
+
 interface Props {
   section: SDUISection;
 }
 
 export function UnknownFallback({ section }: Props) {
-  return (
-    <View style={styles.container}>
-      <View style={styles.badge}>
-        <Text style={styles.badgeText}>UNKNOWN COMPONENT FALLBACK</Text>
+  const { state } = useActionBus();
+  const mode = state['homeScreenMode'] as string | undefined;
+  const showDiagnostic = __DEV__ || mode === 'sdui_unknown';
+
+  if (showDiagnostic) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>UNKNOWN COMPONENT FALLBACK</Text>
+        </View>
+        <Text style={styles.typeLabel}>
+          Type: <Text style={styles.typeValue}>{section?.type || 'unknown'}</Text>
+        </Text>
+        <Text style={styles.hint}>
+          The renderer encountered a component type it doesn't recognize. Instead of crashing, it safely rendered this fallback block.
+        </Text>
+        <View style={styles.iconBox}>
+          <MaterialIcons name="bug-report" size={24} color={colors.status.error} />
+        </View>
       </View>
-      <Text style={styles.typeLabel}>
-        Type: <Text style={styles.typeValue}>{section?.type || 'unknown'}</Text>
-      </Text>
-      <Text style={styles.hint}>
-        The renderer encountered a component type it doesn't recognize. Instead of crashing, it safely rendered this fallback block.
-      </Text>
-      <View style={styles.iconBox}>
-        <MaterialIcons name="bug-report" size={24} color={colors.status.error} />
-      </View>
-    </View>
-  );
+    );
+  }
+
+  return null;
 }
 
 const styles = StyleSheet.create({
