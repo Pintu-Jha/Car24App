@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { SDUIHomeScreen } from './SDUIHomeScreen';
-import { StaticHomeScreen } from './StaticHomeScreen';
-import { colors } from '../theme';
-import { useActionBus } from '../sdui/ActionBus';
+import { SDUIHomeScreen } from '@/screens/SDUIHomeScreen';
+import { StaticHomeScreen } from '@/screens/StaticHomeScreen';
+import { colors } from '@/theme';
+import { useActionBus } from '@/sdui/ActionBus';
 
 type ScreenState = 'sdui' | 'static' | 'sdui_unknown';
 

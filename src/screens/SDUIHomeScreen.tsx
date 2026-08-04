@@ -6,12 +6,12 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import sampleHome from '../schema/sample-home.json';
-import withUnknown from '../schema/with-unknown-component.json';
-import { SDUIPage } from '../schema/types';
-import { SDUIRenderer } from '../sdui/SDUIRenderer';
-import { markEnd, markStart, printReport } from '../perf/markers';
-import { colors } from '../theme';
+import sampleHome from '@/schema/sample-home.json';
+import withUnknown from '@/schema/with-unknown-component.json';
+import { SDUIPage } from '@/schema/types';
+import { SDUIRenderer } from '@/sdui/SDUIRenderer';
+import { markEnd, markStart, printReport } from '@/perf/markers';
+import { colors } from '@/theme';
 
 // In a real app this would be: fetch('/api/home').then(r => r.json())
 // For this demo we import locally to keep the build self-contained.

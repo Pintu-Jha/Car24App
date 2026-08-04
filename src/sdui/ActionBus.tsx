@@ -8,7 +8,7 @@ import React, {
   useContext,
   useReducer,
 } from 'react';
-import { SDUIAction } from '../schema/types';
+import { SDUIAction } from '@/schema/types';
 
 // ── State ────────────────────────────────────────────────────────────────────
 

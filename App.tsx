@@ -8,8 +8,8 @@
 import React from 'react';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
-import { ActionBusProvider, useActionBus } from './src/sdui/ActionBus';
-import { RootNavigator } from './src/navigation/RootNavigator';
+import { ActionBusProvider, useActionBus } from '@/sdui/ActionBus';
+import { RootNavigator } from '@/navigation/RootNavigator';
 
 function EmptyScreen({ routeName, onBack }: { routeName: string, onBack: () => void }) {
   const insets = useSafeAreaInsets();

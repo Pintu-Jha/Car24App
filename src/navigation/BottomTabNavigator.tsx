@@ -3,15 +3,15 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 // Types
-import { BottomTabParamList } from './types';
+import { BottomTabParamList } from '@/navigation/types';
 
 // Screens
-import { RootHomeScreen } from '../screens/RootHomeScreen';
-import { ActivityScreen } from '../screens/ActivityScreen';
-import { GarageScreen } from '../screens/GarageScreen';
-import { ShowroomsScreen } from '../screens/ShowroomsScreen';
-import { ExploreScreen } from '../screens/ExploreScreen';
-import { colors } from '../theme';
+import { RootHomeScreen } from '@/screens/RootHomeScreen';
+import { ActivityScreen } from '@/screens/ActivityScreen';
+import { GarageScreen } from '@/screens/GarageScreen';
+import { ShowroomsScreen } from '@/screens/ShowroomsScreen';
+import { ExploreScreen } from '@/screens/ExploreScreen';
+import { colors } from '@/theme';
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 

@@ -4,15 +4,15 @@
 // Missing types fall through to UnknownFallback — renderer never crashes.
 
 import React from 'react';
-import { CardGrid } from '../components/CardGrid';
-import { CardRail } from '../components/CardRail';
-import { CategoryQuicklinks } from '../components/CategoryQuicklinks';
-import { HeaderSearch } from '../components/HeaderSearch';
-import { IconRail } from '../components/IconRail';
-import { ListRows } from '../components/ListRows';
-import { SectionHeader } from '../components/SectionHeader';
+import { CardGrid } from '@/components/CardGrid';
+import { CardRail } from '@/components/CardRail';
+import { CategoryQuicklinks } from '@/components/CategoryQuicklinks';
+import { HeaderSearch } from '@/components/HeaderSearch';
+import { IconRail } from '@/components/IconRail';
+import { ListRows } from '@/components/ListRows';
+import { SectionHeader } from '@/components/SectionHeader';
 
-export const componentRegistry: Record<string, React.ComponentType<any>> = {
+export const componentRegistry: Record<string, any> = {
   header_search: HeaderSearch,
   category_quicklinks: CategoryQuicklinks,
   card_rail: CardRail,

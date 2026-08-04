@@ -7,8 +7,8 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { SDUISection } from '../schema/types';
-import { colors } from '../theme';
+import { SDUISection } from '@/schema/types';
+import { colors } from '@/theme';
 
 interface Props {
   section: SDUISection;
@@ -33,7 +33,7 @@ export function UnknownFallback({ section }: Props) {
       </View>
     );
   }
-  // Production: fail silently — page keeps rendering, no crash, no visible garbage.
+
   return null;
 }
 

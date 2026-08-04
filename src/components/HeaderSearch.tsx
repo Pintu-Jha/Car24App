@@ -12,9 +12,9 @@ import {
   View,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { SDUIDataItem, SDUIAction } from '../schema/types';
+import { SDUIDataItem, SDUIAction } from '@/schema/types';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../theme';
+import { colors } from '@/theme';
 
 interface Props {
   city: string;

@@ -11,9 +11,9 @@ import {
   View,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { SDUIAction, SDUIDataItem } from '../schema/types';
-import { useActionBus } from '../sdui/ActionBus';
-import { colors } from '../theme';
+import { SDUIAction, SDUIDataItem } from '@/schema/types';
+import { useActionBus } from '@/sdui/ActionBus';
+import { colors } from '@/theme';
 
 // Map icon name from JSON → MaterialIcons glyph name
 const ICON_MAP: Record<string, string> = {

@@ -10,10 +10,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SDUIAction, SDUIDataItem } from '../schema/types';
-import { useActionBus } from '../sdui/ActionBus';
-import { SectionHeader } from './SectionHeader';
-import { colors } from '../theme';
+import { SDUIAction, SDUIDataItem } from '@/schema/types';
+import { useActionBus } from '@/sdui/ActionBus';
+import { SectionHeader } from '@/components/SectionHeader';
+import { colors } from '@/theme';
 
 interface Header {
   title: string;

@@ -3,11 +3,11 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import { SDUIPage, SDUISection } from '../schema/types';
-import { useActionBus } from './ActionBus';
-import { componentRegistry } from './registry';
-import { UnknownFallback } from './UnknownFallback';
-import { colors } from '../theme';
+import { SDUIPage, SDUISection } from '@/schema/types';
+import { useActionBus } from '@/sdui/ActionBus';
+import { componentRegistry } from '@/sdui/registry';
+import { UnknownFallback } from '@/sdui/UnknownFallback';
+import { colors } from '@/theme';
 
 const Tab = createMaterialTopTabNavigator();
 

@@ -6,10 +6,10 @@
 import React, { useEffect, useRef } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { markEnd, markStart, printReport } from '../perf/markers';
+import { markEnd, markStart, printReport } from '@/perf/markers';
 import { Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../theme';
+import { colors } from '@/theme';
 
 // ── Static data (mirrors sample-home.json exactly) ────────────────────────────
 
