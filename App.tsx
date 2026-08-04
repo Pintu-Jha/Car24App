@@ -58,7 +58,7 @@ function AppContent() {
 }
 
 function App(props?: { screen?: string }) {
-  const initialMode = (props?.screen === 'sdui' || props?.screen === 'sdui_unknown') ? props.screen : 'static';
+  const initialMode = (props?.screen === 'static' || props?.screen === 'sdui_unknown') ? props.screen : 'sdui';
   const initialState = { homeScreenMode: initialMode };
 
   return (
