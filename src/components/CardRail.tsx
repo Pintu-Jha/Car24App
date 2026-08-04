@@ -47,19 +47,19 @@ const CARD_THEMES: Record<CardStyle, {
 }> = {
   dark: {
     bg: '#0D1B2A',
-    overlay: 'rgba(13,27,42,0.60)',
+    overlay: 'rgba(13,27,42,0.50)',
     text: colors.text.white,
     fallbackIconColor: 'rgba(255,255,255,0.15)',
   },
   accent: {
     bg: '#14532D',
-    overlay: 'rgba(20,83,45,0.60)',
+    overlay: 'rgba(20,83,45,0.50)',
     text: colors.text.white,
     fallbackIconColor: 'rgba(255,255,255,0.15)',
   },
   cream: {
     bg: '#FFF8F0',
-    overlay: 'rgba(255,248,240,0.6)',
+    overlay: 'rgba(255,248,240,0.5)',
     text: '#3D2C1E',
     fallbackIconColor: 'rgba(160,132,92,0.2)',
     borderColor: '#F0D9A8',
