@@ -73,6 +73,34 @@ function ItemImage({ uri, index }: { uri: string; index: number }) {
 export function IconRail({ header, data }: Props) {
   const { dispatch } = useActionBus();
 
+  const renderItem = React.useCallback(
+    ({ item, index }: { item: SDUIDataItem; index: number }) => {
+      const props = item.props as unknown as IconItemProps;
+
+      return (
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => item.action && dispatch(item.action)}
+          activeOpacity={0.7}>
+          <ItemImage uri={props.image} index={index} />
+          <Text style={styles.label} numberOfLines={2}>
+            {props.label}
+          </Text>
+        </TouchableOpacity>
+      );
+    },
+    [dispatch]
+  );
+
+  const getItemLayout = React.useCallback(
+    (_: any, index: number) => ({
+      length: 100,
+      offset: 100 * index,
+      index,
+    }),
+    []
+  );
+
   return (
     <View style={styles.section}>
       {header && <SectionHeader title={header.title} badge={header.badge} />}
@@ -82,21 +110,9 @@ export function IconRail({ header, data }: Props) {
         showsHorizontalScrollIndicator={false}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}
-        renderItem={({ item, index }) => {
-          const props = item.props as unknown as IconItemProps;
-
-          return (
-            <TouchableOpacity
-              style={styles.item}
-              onPress={() => item.action && dispatch(item.action)}
-              activeOpacity={0.7}>
-              <ItemImage uri={props.image} index={index} />
-              <Text style={styles.label} numberOfLines={2}>
-                {props.label}
-              </Text>
-            </TouchableOpacity>
-          );
-        }}
+        renderItem={renderItem}
+        getItemLayout={getItemLayout}
+        initialNumToRender={5}
       />
     </View>
   );

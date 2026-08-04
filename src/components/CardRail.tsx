@@ -94,6 +94,47 @@ export function CardRail({ header, cardStyle = 'dark', data }: Props) {
   const { dispatch } = useActionBus();
   const theme = CARD_THEMES[cardStyle] ?? CARD_THEMES.dark;
 
+  const renderItem = React.useCallback(
+    ({ item }: { item: SDUIDataItem }) => {
+      const props = item.props as unknown as RailCardProps;
+      return (
+        <TouchableOpacity
+          style={[
+            styles.card,
+            { backgroundColor: theme.bg },
+            theme.borderColor ? { borderWidth: 1, borderColor: theme.borderColor } : undefined,
+          ]}
+          onPress={() => item.action && dispatch(item.action)}
+          activeOpacity={0.85}>
+          {/* Image fills entire card as background */}
+          <View style={styles.imageLayer}>
+            <CardImage uri={props.image} cardStyle={cardStyle} />
+          </View>
+
+          {/* Semi-transparent colored overlay for text readability */}
+          <View style={[styles.overlay, { backgroundColor: theme.overlay }]} />
+
+          {/* Title text on top */}
+          <View style={styles.textLayer}>
+            <Text style={[styles.cardTitle, { color: theme.text }]} numberOfLines={2}>
+              {props.title}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      );
+    },
+    [theme, cardStyle, dispatch]
+  );
+
+  const getItemLayout = React.useCallback(
+    (_: any, index: number) => ({
+      length: 162,
+      offset: 162 * index,
+      index,
+    }),
+    []
+  );
+
   return (
     <View style={styles.section}>
       {header && <SectionHeader title={header.title} badge={header.badge} />}
@@ -103,34 +144,9 @@ export function CardRail({ header, cardStyle = 'dark', data }: Props) {
         showsHorizontalScrollIndicator={false}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.list}
-        renderItem={({ item }) => {
-          const props = item.props as unknown as RailCardProps;
-          return (
-            <TouchableOpacity
-              style={[
-                styles.card,
-                { backgroundColor: theme.bg },
-                theme.borderColor ? { borderWidth: 1, borderColor: theme.borderColor } : undefined,
-              ]}
-              onPress={() => item.action && dispatch(item.action)}
-              activeOpacity={0.85}>
-              {/* Image fills entire card as background */}
-              <View style={styles.imageLayer}>
-                <CardImage uri={props.image} cardStyle={cardStyle} />
-              </View>
-
-              {/* Semi-transparent colored overlay for text readability */}
-              <View style={[styles.overlay, { backgroundColor: theme.overlay }]} />
-
-              {/* Title text on top */}
-              <View style={styles.textLayer}>
-                <Text style={[styles.cardTitle, { color: theme.text }]} numberOfLines={2}>
-                  {props.title}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          );
-        }}
+        renderItem={renderItem}
+        getItemLayout={getItemLayout}
+        initialNumToRender={4}
       />
     </View>
   );
