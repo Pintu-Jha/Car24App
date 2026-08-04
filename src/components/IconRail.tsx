@@ -13,6 +13,7 @@ import {
 import { SDUIAction, SDUIDataItem } from '@/schema/types';
 import { useActionBus } from '@/sdui/ActionBus';
 import { SectionHeader } from '@/components/SectionHeader';
+import { EmojiPlaceholder } from '@/components/common/EmojiPlaceholder';
 import { colors } from '@/theme';
 
 interface Header {
@@ -30,13 +31,6 @@ interface Props {
   data?: SDUIDataItem[];
   action?: SDUIAction;
 }
-
-const IMAGE_EMOJI: Record<string, string> = {
-  car_loan: '🏦',
-  car2: '🚗',
-  cash2: '💳',
-  credit: '📊',
-};
 
 const CIRCLE_COLORS = ['#E3F2FD', '#FFF3E0', '#E8F5E9', '#F3E5F5'];
 
@@ -61,11 +55,13 @@ export function IconRail({ header, data }: Props) {
               style={styles.item}
               onPress={() => item.action && dispatch(item.action)}
               activeOpacity={0.7}>
-              <View style={[styles.circle, { backgroundColor: circleBg }]}>
-                <Text style={styles.emoji}>
-                  {IMAGE_EMOJI[props.image] ?? '💼'}
-                </Text>
-              </View>
+              <EmojiPlaceholder
+                name={props.image}
+                backgroundColor={circleBg}
+                size={28}
+                height={64}
+                borderRadius={32}
+              />
               <Text style={styles.label} numberOfLines={2}>
                 {props.label}
               </Text>
@@ -90,22 +86,6 @@ const styles = StyleSheet.create({
   item: {
     alignItems: 'center',
     width: 80,
-  },
-  circle: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  emoji: {
-    fontSize: 28,
   },
   label: {
     fontSize: 12,

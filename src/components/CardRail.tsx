@@ -14,6 +14,7 @@ import {
 import { SDUIAction, SDUIDataItem } from '@/schema/types';
 import { useActionBus } from '@/sdui/ActionBus';
 import { SectionHeader } from '@/components/SectionHeader';
+import { EmojiPlaceholder } from '@/components/common/EmojiPlaceholder';
 import { colors } from '@/theme';
 
 type CardStyle = 'dark' | 'accent' | 'cream';
@@ -63,28 +64,6 @@ const CARD_THEMES: Record<CardStyle, {
   },
 };
 
-// Image placeholder: colored block with a stylised car emoji
-// Covers the missing image files gracefully for demo purposes.
-function CardImage({ name, theme }: { name: string; theme: typeof CARD_THEMES[CardStyle] }) {
-  const emojiMap: Record<string, string> = {
-    car_suv: '🚙',
-    car_hatch: '🚗',
-    car_sports: '🏎',
-    car_new: '🚘',
-    hand_key: '🔑',
-    cash: '💵',
-    damaged_car: '🚧',
-    pdi: '🔍',
-    check: '✅',
-    history: '📋',
-  };
-  return (
-    <View style={[styles.imageBox, { backgroundColor: theme.imageBg, borderColor: theme.imageBorder }]}>
-      <Text style={styles.imageEmoji}>{emojiMap[name] ?? '🚗'}</Text>
-    </View>
-  );
-}
-
 export function CardRail({ header, cardStyle = 'dark', data }: Props) {
   const { dispatch } = useActionBus();
   const theme = CARD_THEMES[cardStyle] ?? CARD_THEMES.dark;
@@ -105,7 +84,13 @@ export function CardRail({ header, cardStyle = 'dark', data }: Props) {
               style={[styles.card, { backgroundColor: theme.bg }]}
               onPress={() => item.action && dispatch(item.action)}
               activeOpacity={0.85}>
-              <CardImage name={props.image} theme={theme} />
+              <EmojiPlaceholder 
+                name={props.image} 
+                backgroundColor={theme.imageBg} 
+                borderColor={theme.imageBorder} 
+                height={100}
+                size={44}
+              />
               <Text style={[styles.cardTitle, { color: theme.text }]} numberOfLines={2}>
                 {props.title}
               </Text>
@@ -136,15 +121,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 6,
     elevation: 5,
-  },
-  imageBox: {
-    height: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 0,
-  },
-  imageEmoji: {
-    fontSize: 44,
   },
   cardTitle: {
     fontSize: 13,
