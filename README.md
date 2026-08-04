@@ -1,30 +1,90 @@
-# Cars24 SDUI Implementation
+# Cars24 SDUI Implementation — Enterprise Mobile Architecture
 
-An enterprise-grade Server-Driven UI (SDUI) architecture built with React Native and TypeScript, solving the problem of deploying layout changes without App Store releases.
+An enterprise-grade Server-Driven UI (SDUI) system built with React Native (CLI) and TypeScript, specifically engineered to eliminate app store release cycles for dynamic layout, content, and interactive design updates on Android and iOS.
 
-## Which screen was chosen and why?
-I chose to implement the **Cars24 Home/Landing Screen**.
-**Why:** The Home Screen acts as the central router for the user's intent (Buy, Sell, Loans, Services) and possesses the highest structural volatility. It demands diverse UI layouts (sticky headers, horizontal rails, wrapping grids, and vertical lists) and complex interactive states (tab filters that mutate the visible page content dynamically). This makes it the ultimate stress test for an SDUI engine's action bus and component registry.
+---
 
-## Architecture Overview
-The system is built on a clean, decoupled architecture:
-1. **Schema (`src/schema/types.ts`)**: Deeply typed TypeScript interfaces that dictate the exact contract between the server payload and client renderer.
-2. **Registry (`src/sdui/registry.ts`)**: A dictionary mapping string types (e.g. `card_rail`) to physical React Native components.
-3. **Renderer (`src/sdui/SDUIRenderer.tsx`)**: The recursive engine that iterates over the JSON payload, checks visibility conditions, resolves components from the registry, and injects data props.
-4. **ActionBus (`src/sdui/ActionBus.tsx`)**: A Context-based global event dispatcher. It intercepts server-driven actions (like `navigate` or `update_state`) and executes them natively, removing hardcoded `onPress` business logic from UI components.
-5. **Theme (`src/theme.ts`)**: A centralized design token system ensuring SDUI layouts maintain brand consistency dynamically.
+## 1. Which screen was chosen and why?
+I chose to replicate and engineer the **Cars24 Home/Landing Screen**.
 
-## Versioning Story
-As the schema evolves, older app versions will inevitably receive JSON payloads containing new component types they do not understand.
-- **Graceful Degradation:** The renderer implements an `UnknownFallback` component. If a section type is missing from the local registry, it safely returns `null` in production (or a visible diagnostic boundary in `__DEV__`), ensuring the app **never crashes**.
-- **`minClientVersion` flag:** The schema's `meta` object supports a `minClientVersion`. The client checks this before parsing. If the payload is fundamentally incompatible (e.g., Schema V2 vs V1), the client can reject the payload entirely and load a bundled, safe fallback JSON from disk, prompting the user to update the app.
+**Why the Home Screen?** 
+- **Highest Volatility & Business Criticality:** The landing page serves as the mission-critical traffic router for user intent (Buy Used, Sell Car, Get Loans, Car Check Services, Challan/Insurance). Marketing banners, promotions (e.g., "Up to ₹80,000 off"), and service rails change weekly; waiting for Apple/Google app store review cycles directly impacts conversion rates.
+- **Structural Complexity:** Unlike simple static detail screens or linear forms, the home page demands a rich assortment of diverse UI layouts: sticky localized headers, interactive rotating search prompts, horizontally scrolling tab chips, themed banner rails, wrapping 2-column grids, and vertical fraud-check lists. 
+- **State Mutation & Interaction Testing:** Tapping a category chip dynamically filters and alters the visual page content without triggering full navigation departures. Implementing this completely via JSON actions proves the capability of our global event system.
 
-## Project Setup
-1. `npm install` or `yarn install`
-2. `npm run ios` or `npm run android`
+---
 
-## Testing the Capabilities
-The app includes a built-in Developer Toggle at the bottom of the screen to swap between three states instantly:
-1. **SDUI normal:** Renders the screen purely from `sample-home.json`.
-2. **Static:** Renders the identical screen using hardcoded React Native components (for A/B performance profiling).
-3. **Fallback demo:** Injects a payload with a purposely unrecognized `"type": "future_3d_carousel"` to demonstrate the engine safely isolating and rendering the `UnknownFallback` boundary without crashing the surrounding content.
+## 2. Architecture Overview & Design Rationale
+The architecture adheres to strict separation of concerns, decoupling network schema definitions, business orchestration, and view rendering into specialized layers:
+
+```
+┌───────────────┐     JSON      ┌──────────────────┐     Inject     ┌──────────────────┐
+│  Server / Mock│ ────────────> │   SDUIRenderer   │ <───────────── │ ComponentRegistry│
+│    Payload    │               │  (Pure Engine)   │                │   (Native Views) │
+└───────────────┘               └────────┬─────────┘                └──────────────────┘
+                                         │
+                                         ▼
+                                ┌──────────────────┐      Events    ┌──────────────────┐
+                                │ Custom UI Nodes  │ ─────────────> │     ActionBus    │
+                                │  (Card, Rail...) │                │ (Context / State)│
+                                └──────────────────┘                └──────────────────┘
+```
+
+1. **Strict TypeScript Schema (`src/schema/types.ts`)**: Defines the exact structural contract (`SDUIPage`, `SDUISection`, `SDUIDataItem`, `SDUIAction`, `SDUICondition`). No UI component receives amorphous raw JSON; everything is verified against typed props and explicit data item models.
+2. **Injected Component Registry (`src/sdui/registry.ts`)**: A centralized dictionary mapping string keys (e.g., `card_rail`, `icon_rail`) to React Native native view components. To avoid circular dependency antipatterns and enable seamless mock testing, the registry is **injected via props** into the renderer rather than hardcoded inside it.
+3. **Pure Recursive Renderer (`src/sdui/SDUIRenderer.tsx`)**: The orchestrator engine that evaluates conditional visibility rules (`visible: { stateKey, equals }`), reconciles list vs. tab layouts, resolves components from the injected registry, and memoizes individual section rendering via `React.memo` to prevent cascading render trees.
+4. **Decentralized Event Machine — ActionBus (`src/sdui/ActionBus.tsx`)**: A Context-based event system that acts as an action dispatcher. Instead of hardcoding `onPress` navigation or state logic inside UI presentation components, elements trigger JSON-defined actions (`navigate`, `update_state`, `open_sheet`, `compound`). The `ActionBus` executes these actions cleanly, keeping visual components 100% reusable and logic-free.
+5. **Atomic Design Token Engine (`src/theme.ts`)**: A centralized design token repository exporting standardized semantic `colors`, `spacing` (`xs` through `xxl`), and `radius` metrics. Visual themes (like `dark`, `accent`, and `cream` styles in rails) are expressed as string tokens in JSON and resolved to native styling tokens on the client.
+6. **Robust Image & Asset Fallback (`src/components/common/DynamicImage.tsx`)**: All graphic renders utilize remote URLs with graceful local fallback states (`MaterialIcons`), ensuring zero broken layouts if a network image fails or is delayed.
+
+---
+
+## 3. Graceful Fallback & Fault Tolerance (No Crashes Guaranteed)
+In server-driven apps, the server will inevitably send payloads featuring new component types (or malformed props) to older client binaries. Our system enforces **zero crashes** through two distinct defensive barriers:
+- **Registry Level — Unknown Component Fallback:** When `SDUIRenderer` encounters an unmapped section type (e.g., `"type": "future_3d_carousel"`), it gracefully routes the data to `UnknownFallback`. In production, this renders nothing (`null`), preserving normal screen operation. In `__DEV__` mode, it renders a diagnostic yellow card highlighting the unsupported component type and its payload for rapid debugging.
+- **Runtime Level — Granular Error Boundaries:** Every section rendered through the registry is wrapped in a dedicated `ErrorBoundary` (`src/components/common/ErrorBoundary.tsx`). If a custom native component throws a runtime exception during rendering or lifecycle evaluation, the boundary traps the failure locally and displays a stylized error placeholder, keeping the surrounding rails and tabs functioning normally.
+
+---
+
+## 4. The Versioning Story
+To allow legacy mobile builds and modern server engines to coexist without regression, our versioning strategy operates on three complementary tiers:
+
+1. **Payload Metadata Gatekeeping (`minClientVersion`):** Every SDUI JSON payload includes a `meta: { schemaVersion, minClientVersion }` declaration. At application startup, the network fetching layer compares `minClientVersion` against the binary's current app version. If an architectural change breaks backward compatibility entirely, the app rejects the server payload and falls back to an embedded bundled JSON payload (stored in app bundle), while prompting the user with an "App Update Required" notice.
+2. **Additive Schema Evolution:** New fields, actions, or style tokens are always introduced as *optional* attributes in TypeScript. If a schema v1.1 payload includes a new `"badgeColor": "gold"` property on an older v1.0 mobile app, the native component simply ignores the unrecognized key and uses its default tokens.
+3. **Server-Side Negotiation via Header Headers:** When fetching `/api/v1/sdui/home`, the client passes `X-Client-Version` and `X-Supported-Components: card_rail,icon_rail,...` in HTTP headers. The backend BFF (Backend For Frontend) can dynamically down-sample or strip unsupported sections before transmitting the payload over the wire, optimizing bandwidth.
+
+---
+
+## 5. Project Setup & Execution
+The project is configured as a standard native React Native project (using React Native CLI with Hermes compiler enabled, no Expo dependence).
+
+### Requirements
+- Node.js >= 18.x
+- Ruby / Cocoapods (for iOS)
+- Android SDK & Android Studio (for Android)
+
+### Installation & Launch
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Install iOS CocoaPods (Mac only)
+cd ios && pod install && cd ..
+
+# 3. Start Metro bundler (with reset cache for fresh resolution)
+npx react-native start --reset-cache
+
+# 4. Run natively on device/emulator
+npm run android
+# or
+npm run ios
+```
+
+---
+
+## 6. Verification & Demo Mode (Developer Toggle)
+To demonstrate the system's capabilities, speed, and safety in real-time, the app incorporates a floating **Developer Mode Toggle** at the bottom of the root screen. Tapping it seamlessly switches between three operational modes without restarting the bundler:
+
+1. **SDUI (Normal Mode):** Renders the screen dynamically from `sample-home.json`, showcasing tab switching, action bus routing, theme token resolution, and image background rendering.
+2. **Static Twin (Control Mode):** Renders `StaticHomeScreen.tsx` — a 100% hardcoded, traditional React Native implementation with identical visual UI and structure, used as the strict A/B test baseline for our performance benchmarking (`PERF.md`).
+3. **Fallback Demo (Safety Mode):** Instantly injects `with-unknown-component.json`, which inserts an unrecognised `"type": "future_3d_carousel"` section right in the middle of the home rails. Demonstrates the visual diagnostic `UnknownFallback` component containing the unrecognized section while all surrounding cards, tabs, and rails remain interactive and fully functional.
