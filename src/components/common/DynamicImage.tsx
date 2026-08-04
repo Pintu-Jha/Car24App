@@ -10,23 +10,25 @@ interface Props {
   borderRadius?: number;
 }
 
-const EMOJI_MAP: Record<string, string> = {
-  car_suv: '🚙',
-  car_hatch: '🚗',
-  car_sports: '🏎',
-  car_new: '🚘',
-  hand_key: '🔑',
-  cash: '💵',
-  damaged_car: '🚧',
-  pdi: '🔍',
-  check: '✅',
-  history: '📋',
-  car_loan: '🏦',
-  car2: '🚙',
-  cash2: '💸',
-  credit: '📈',
-  pdi2: '🔎',
-  check2: '✔️',
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
+const ICON_MAP: Record<string, string> = {
+  car_suv: 'directions-car',
+  car_hatch: 'directions-car',
+  car_sports: 'time-to-leave',
+  car_new: 'local-taxi',
+  hand_key: 'vpn-key',
+  cash: 'attach-money',
+  damaged_car: 'build',
+  pdi: 'find-in-page',
+  check: 'check-circle',
+  history: 'history',
+  car_loan: 'account-balance',
+  car2: 'directions-car',
+  cash2: 'attach-money',
+  credit: 'trending-up',
+  pdi2: 'find-in-page',
+  check2: 'check-circle',
 };
 
 export function DynamicImage({ name, backgroundColor = '#eee', borderColor, size = 44, height = 100, borderRadius = 0 }: Props) {
@@ -46,7 +48,6 @@ export function DynamicImage({ name, backgroundColor = '#eee', borderColor, size
     );
   }
 
-
   return (
     <View style={[
       styles.imageBox,
@@ -58,7 +59,11 @@ export function DynamicImage({ name, backgroundColor = '#eee', borderColor, size
         borderColor
       }
     ]}>
-      <Text style={[styles.imageEmoji, { fontSize: size }]}>{EMOJI_MAP[name] ?? '🚗'}</Text>
+      <MaterialIcons 
+        name={ICON_MAP[name] ?? 'image'} 
+        size={size} 
+        color="#888" 
+      />
     </View>
   );
 }
@@ -68,8 +73,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
-  },
-  imageEmoji: {
-    textAlign: 'center',
   },
 });
