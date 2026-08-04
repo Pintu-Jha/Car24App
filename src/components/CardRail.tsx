@@ -1,9 +1,9 @@
 // src/components/CardRail.tsx
 // Generic horizontal card rail — reused for Buy, Sell, and Car Check sections.
-// Layout: title at TOP-LEFT, image at BOTTOM-RIGHT (matching Cars24 screenshot).
+// Layout: Image fills card as background, colored overlay ensures readable title.
 // Theme is controlled via props.cardStyle: "dark" | "accent" | "cream"
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   FlatList,
   Image,
@@ -40,57 +40,52 @@ interface Props {
 // Theme tokens — all styling decisions live in code, not in JSON.
 const CARD_THEMES: Record<CardStyle, {
   bg: string;
+  overlay: string;
   text: string;
+  fallbackIconColor: string;
+  borderColor?: string;
 }> = {
   dark: {
-    bg: colors.background.darkRail,
+    bg: '#0D1B2A',
+    overlay: 'rgba(13,27,42,0.65)',
     text: colors.text.white,
+    fallbackIconColor: 'rgba(255,255,255,0.15)',
   },
   accent: {
-    bg: colors.background.greenRail,
+    bg: '#14532D',
+    overlay: 'rgba(20,83,45,0.65)',
     text: colors.text.white,
+    fallbackIconColor: 'rgba(255,255,255,0.15)',
   },
   cream: {
-    bg: colors.background.creamRail,
-    text: colors.text.primary,
+    bg: '#FFF8F0',
+    overlay: 'rgba(255,248,240,0.7)',
+    text: '#3D2C1E',
+    fallbackIconColor: 'rgba(160,132,92,0.2)',
+    borderColor: '#F0D9A8',
   },
-};
-
-// Icon fallback map for when image URL fails or is a semantic string
-const ICON_FALLBACK: Record<string, string> = {
-  car_suv: 'directions-car',
-  car_hatch: 'directions-car',
-  car_sports: 'time-to-leave',
-  car_new: 'local-taxi',
-  hand_key: 'vpn-key',
-  cash: 'attach-money',
-  damaged_car: 'build',
-  pdi: 'find-in-page',
-  check: 'check-circle',
-  history: 'history',
 };
 
 function CardImage({ uri, cardStyle }: { uri: string; cardStyle: CardStyle }) {
   const isUrl = uri.startsWith('http');
-  const [error, setError] = React.useState(false);
+  const [error, setError] = useState(false);
+  const theme = CARD_THEMES[cardStyle];
 
   if (isUrl && !error) {
     return (
       <Image
         source={{ uri }}
         style={styles.cardImage}
-        resizeMode="contain"
+        resizeMode="cover"
         onError={() => setError(true)}
       />
     );
   }
 
-  // Fallback: MaterialIcon
-  const iconName = ICON_FALLBACK[uri] ?? 'image';
-  const iconColor = cardStyle === 'cream' ? '#A0845C' : 'rgba(255,255,255,0.6)';
+  // Fallback: large subtle icon centered in card
   return (
     <View style={styles.cardImageFallback}>
-      <MaterialIcons name={iconName} size={40} color={iconColor} />
+      <MaterialIcons name="directions-car" size={64} color={theme.fallbackIconColor} />
     </View>
   );
 }
@@ -98,7 +93,6 @@ function CardImage({ uri, cardStyle }: { uri: string; cardStyle: CardStyle }) {
 export function CardRail({ header, cardStyle = 'dark', data }: Props) {
   const { dispatch } = useActionBus();
   const theme = CARD_THEMES[cardStyle] ?? CARD_THEMES.dark;
-  const isCream = cardStyle === 'cream';
 
   return (
     <View style={styles.section}>
@@ -116,17 +110,23 @@ export function CardRail({ header, cardStyle = 'dark', data }: Props) {
               style={[
                 styles.card,
                 { backgroundColor: theme.bg },
-                isCream && styles.cardCream,
+                theme.borderColor ? { borderWidth: 1, borderColor: theme.borderColor } : undefined,
               ]}
               onPress={() => item.action && dispatch(item.action)}
               activeOpacity={0.85}>
-              {/* Title at top-left */}
-              <Text style={[styles.cardTitle, { color: theme.text }]} numberOfLines={2}>
-                {props.title}
-              </Text>
-              {/* Image at bottom-right */}
-              <View style={styles.cardImageContainer}>
+              {/* Image fills entire card as background */}
+              <View style={styles.imageLayer}>
                 <CardImage uri={props.image} cardStyle={cardStyle} />
+              </View>
+
+              {/* Semi-transparent colored overlay for text readability */}
+              <View style={[styles.overlay, { backgroundColor: theme.overlay }]} />
+
+              {/* Title text on top */}
+              <View style={styles.textLayer}>
+                <Text style={[styles.cardTitle, { color: theme.text }]} numberOfLines={2}>
+                  {props.title}
+                </Text>
               </View>
             </TouchableOpacity>
           );
@@ -135,6 +135,9 @@ export function CardRail({ header, cardStyle = 'dark', data }: Props) {
     </View>
   );
 }
+
+const CARD_WIDTH = 150;
+const CARD_HEIGHT = 155;
 
 const styles = StyleSheet.create({
   section: {
@@ -146,41 +149,46 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   card: {
-    width: 140,
-    height: 150,
-    borderRadius: radius.md,
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    borderRadius: radius.lg,
     overflow: 'hidden',
-    padding: spacing.md,
     position: 'relative',
+    // Premium shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    elevation: 6,
   },
-  cardCream: {
-    borderWidth: 1,
-    borderColor: colors.border.cream,
-  },
-  cardTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    lineHeight: 20,
-    zIndex: 1,
-    maxWidth: '70%',
-  },
-  cardImageContainer: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 90,
-    height: 90,
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
+  imageLayer: {
+    ...StyleSheet.absoluteFill,
   },
   cardImage: {
     width: '100%',
     height: '100%',
   },
   cardImageFallback: {
-    width: '100%',
-    height: '100%',
+    ...StyleSheet.absoluteFill,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
+    paddingBottom: 16,
+  },
+  overlay: {
+    ...StyleSheet.absoluteFill,
+  },
+  textLayer: {
+    ...StyleSheet.absoluteFill,
+    padding: spacing.md + 2,
+    justifyContent: 'flex-start',
+  },
+  cardTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    lineHeight: 21,
+    letterSpacing: 0.1,
+    textShadowColor: 'rgba(0,0,0,0.25)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
 });
