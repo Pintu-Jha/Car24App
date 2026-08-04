@@ -48,12 +48,13 @@ In server-driven apps, the server will inevitably send payloads featuring new co
 
 ---
 
-## 4. The Versioning Story
-To allow legacy mobile builds and modern server engines to coexist without regression, our versioning strategy operates on three complementary tiers:
+## 4. The Versioning Strategy & Backward Compatibility
 
-1. **Payload Metadata Gatekeeping (`minClientVersion`):** Every SDUI JSON payload includes a `meta: { schemaVersion, minClientVersion }` declaration. At application startup, the network fetching layer compares `minClientVersion` against the binary's current app version. If an architectural change breaks backward compatibility entirely, the app rejects the server payload and falls back to an embedded bundled JSON payload (stored in app bundle), while prompting the user with an "App Update Required" notice.
-2. **Additive Schema Evolution:** New fields, actions, or style tokens are always introduced as *optional* attributes in TypeScript. If a schema v1.1 payload includes a new `"badgeColor": "gold"` property on an older v1.0 mobile app, the native component simply ignores the unrecognized key and uses its default tokens.
-3. **Server-Side Negotiation via Header Headers:** When fetching `/api/v1/sdui/home`, the client passes `X-Client-Version` and `X-Supported-Components: card_rail,icon_rail,...` in HTTP headers. The backend BFF (Backend For Frontend) can dynamically down-sample or strip unsupported sections before transmitting the payload over the wire, optimizing bandwidth.
+To allow legacy mobile builds and modern server engines to coexist without regression, our enterprise versioning architecture is designed around three complementary specification tiers:
+
+1. **Payload Metadata Gatekeeping (`minClientVersion`):** Every SDUI JSON payload specifies a `meta: { schemaVersion, minClientVersion }` object. In a production network integration, the client's HTTP gateway compares `minClientVersion` against the app binary version. If a major server payload update exceeds the client's supported features, the gateway rejects the remote payload, falls back to a safe embedded local bundle, and triggers an "App Update Required" modal.
+2. **Additive Schema Evolution:** New fields, actions, or style tokens are specified as *optional* attributes in TypeScript interfaces. If a future v1.1 payload includes a new `"badgeColor": "gold"` property on a v1.0 client build, the component ignores the unrecognized property and safely applies default design tokens.
+3. **Server-Side Negotiation via Request Headers:** When requesting SDUI screens (e.g. `/api/v1/sdui/home`), the client passes `X-Client-Version` and `X-Supported-Components` headers. The Backend For Frontend (BFF) engine uses this manifest to down-sample or omit unsupported component nodes prior to payload delivery.
 
 ---
 
